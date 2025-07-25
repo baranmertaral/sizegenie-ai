@@ -1,0 +1,186 @@
+.App {
+  text-align: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.App-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.App-header h1 {
+  font-size: 3rem;
+  margin-bottom: 10px;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.App-header p {
+  font-size: 1.2rem;
+  margin-bottom: 30px;
+  opacity: 0.9;
+}
+
+.size-form {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 30px;
+  margin: 20px 0;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  max-width: 400px;
+  width: 100%;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.9);
+  box-sizing: border-box;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+}
+
+button {
+  background: linear-gradient(45deg, #ff6b6b, #feca57);
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: transform 0.2s;
+  margin-top: 10px;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.result {
+  background: rgba(255, 255, 255, 0.95);
+  color: #333;
+  border-radius: 15px;
+  padding: 20px;
+  margin-top: 20px;
+  max-width: 500px;
+  text-align: left;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.result h3 {
+  color: #667eea;
+  margin-bottom: 15px;
+}
+
+.result pre {
+  white-space: pre-wrap;
+  font-family: 'Arial', sans-serif;
+  line-height: 1.6;
+  font-size: 1rem;
+}
+/* Fotoğraf analizi bölümü için stiller */
+.photo-section {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 30px;
+  margin: 20px 0;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  max-width: 400px;
+  width: 100%;
+}
+
+.photo-section h2 {
+  color: white;
+  margin-bottom: 10px;
+  font-size: 1.5rem;
+}
+
+.photo-section p {
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 20px;
+  font-size: 1rem;
+}
+
+.photo-input {
+  width: 100%;
+  padding: 15px;
+  border: 2px dashed rgba(255, 255, 255, 0.5);
+  border-radius: 15px;
+  background: transparent;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.photo-input:hover {
+  border-color: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.photo-result {
+  background: rgba(255, 255, 255, 0.95);
+  color: #333;
+  border-radius: 15px;
+  padding: 20px;
+  margin-top: 20px;
+  text-align: left;
+  border: 3px solid #667eea;
+}
+
+.photo-result h3 {
+  color: #667eea;
+  margin-bottom: 15px;
+}
+
+.loading {
+  color: #feca57;
+  font-weight: bold;
+  margin: 15px 0;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+.size-form h2 {
+  color: white;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+}
