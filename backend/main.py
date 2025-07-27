@@ -236,80 +236,55 @@ async def analyze_photo(file: UploadFile = File(...)):
 
 @app.post("/get-products")
 def get_products(request: ProductRequest):
-    """AI destekli ürün önerileri"""
+    """Dinamik ürün önerileri"""
     try:
-        # Markadan ürünleri çek
+        print(f"\n🛍️ === {request.brand} İSTEĞİ ===")
+        print(f"Body type: {request.body_type}")
+        print(f"Category: {request.category}")
+        
+        # Dinamik ürün çekme
         products = scraper.get_products_by_brand(
             brand=request.brand,
             category=request.category,
+            analysis_text=request.body_type,  # Bu analiz metni
             limit=6
         )
         
-        if not products:
-            raise HTTPException(status_code=404, detail=f"{request.brand} için ürün bulunamadı")
+        print(f"✅ Döndürülen ürün sayısı: {len(products)}")
         
-        # AI ile vücut tipine uygun ürün analizi
-        if GEMINI_AVAILABLE:
-            try:
-                ai_prompt = f"""
-                Sen bir premium personal shopper ve styling expert'isin.
-                
-                📊 Analiz Bilgileri:
-                - Vücut tipi: {request.body_type}
-                - Seçilen marka: {request.brand}
-                - Kategori: {request.category}
-                
-                🎯 Görevin:
-                {request.brand} markasından {request.body_type} vücut tipi için perfect ürün analizi yap:
-                
-                1. 👗 Ürün Uygunluk Analizi:
-                   - Hangi kıyafet tipleri bu vücut tipine mükemmel uyar?
-                   - {request.brand}'nin hangi koleksiyonları ideal?
-                   
-                2. 🎨 Stil Tavsiyeleri:
-                   - Bu markada hangi kesimler bulunur?
-                   - Hangi renkler ve desenler en uygun?
-                   
-                3. 🛍️ Shopping İpuçları:
-                   - {request.brand}'de ne almalı, neden kaçınmalı?
-                   - Fit ve beden tavsiyeleri
-                   
-                4. 💡 Pro Styling:
-                   - Nasıl kombinlemeli?
-                   - Hangi aksesuarlarla tamamlamalı?
-                
-                Kısa, öz ve son derece motive edici bir analiz yap.
-                Türkçe ve actionable tavsiyeler ver.
-                """
-                
-                ai_response = model.generate_content(ai_prompt)
-                recommendation = ai_response.text
-                ai_type = "real_gemini_styling"
-                
-                print(f"✅ AI styling analizi: {request.brand} için {request.body_type}")
-                
-            except Exception as e:
-                if "quota" in str(e).lower():
-                    recommendation = f"🛍️ {request.brand} ürünleri {request.body_type} vücut tipi için seçildi. AI styling analizi geçici olarak sınırlı."
-                    ai_type = "quota_limited"
-                else:
-                    raise e
-        else:
-            recommendation = f"🛍️ {request.brand} markasından özenle seçilmiş ürünler."
-            ai_type = "basic_recommendation"
+        if not products:
+            print(f"❌ {request.brand} için ürün bulunamadı")
+            return {
+                "success": False,
+                "products": [],
+                "ai_recommendation": f"{request.brand} ürünleri şu anda yüklenemiyor.",
+                "brand": request.brand,
+                "product_count": 0
+            }
+        
+        # AI recommendation
+        recommendation = f"🎯 {request.brand} markasından vücut tipinize uygun özel seçim!"
         
         return {
             "success": True,
             "products": products,
             "ai_recommendation": recommendation,
             "brand": request.brand,
-            "body_type": request.body_type,
-            "ai_type": ai_type,
-            "product_count": len(products)
+            "product_count": len(products),
+            "is_dynamic": True
         }
         
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        print(f"❌ HATA: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return {
+            "success": False,
+            "products": [],
+            "ai_recommendation": f"Hata: {str(e)}",
+            "brand": request.brand,
+            "product_count": 0
+        }
 
 @app.get("/brands")
 def get_available_brands():

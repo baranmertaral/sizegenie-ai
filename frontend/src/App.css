@@ -1,326 +1,539 @@
-.App {
-  text-align: center;
+/* Modern Kadın Odaklı Tasarım */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   min-height: 100vh;
-  padding: 20px;
+  overflow-x: hidden;
+}
+
+.App {
+  min-height: 100vh;
+  position: relative;
 }
 
 .App-header {
+  padding: 20px;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  color: white;
+  justify-content: flex-start;
+  position: relative;
 }
 
-.App-header h1 {
-  font-size: 3rem;
-  margin-bottom: 10px;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+/* ========== ANA SAYFA TASARIMI ========== */
+.home-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  text-align: center;
 }
 
-.App-header p {
-  font-size: 1.2rem;
-  margin-bottom: 30px;
-  opacity: 0.9;
-}
-
-.size-form {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border-radius: 20px;
-  padding: 30px;
-  margin: 20px 0;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-  max-width: 400px;
-  width: 100%;
-}
-
-.form-group {
+.home-page h1 {
+  font-size: 3.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #ff6b9d, #c44569);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   margin-bottom: 20px;
-  text-align: left;
+  text-shadow: 0 4px 15px rgba(255, 107, 157, 0.3);
+}
+
+.home-subtitle {
+  font-size: 1.3rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 60px;
+  font-weight: 300;
+  line-height: 1.6;
+}
+
+.analysis-selection h2 {
+  font-size: 2rem;
+  color: white;
+  margin-bottom: 40px;
+  font-weight: 500;
+}
+
+.analysis-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 30px;
+  margin-top: 40px;
+}
+
+.analysis-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 25px;
+  padding: 40px 30px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border: 2px solid rgba(255, 107, 157, 0.1);
+  box-shadow: 0 15px 35px rgba(255, 107, 157, 0.1);
+}
+
+.analysis-card:hover {
+  transform: translateY(-15px) scale(1.02);
+  box-shadow: 0 25px 50px rgba(255, 107, 157, 0.3);
+  border-color: rgba(255, 107, 157, 0.3);
+}
+
+.analysis-icon {
+  font-size: 4rem;
+  margin-bottom: 20px;
+  filter: drop-shadow(0 4px 8px rgba(255, 107, 157, 0.3));
+}
+
+.analysis-card h3 {
+  font-size: 1.8rem;
+  color: #2d3748;
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+.analysis-card p {
+  color: #718096;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 25px;
+}
+
+.analysis-btn {
+  background: linear-gradient(135deg, #ff6b9d, #c44569);
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 25px rgba(255, 107, 157, 0.3);
+}
+
+.analysis-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 35px rgba(255, 107, 157, 0.4);
+  background: linear-gradient(135deg, #ff8fab, #d63384);
+}
+
+/* ========== SAYFA HEADER ========== */
+.page-header {
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 40px;
+  padding: 0 20px;
+}
+
+.back-btn {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  padding: 12px 24px;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateX(-5px);
+  box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);
+}
+
+.page-header h1 {
+  font-size: 2.5rem;
+  color: white;
+  font-weight: 600;
+  text-align: center;
+  flex: 1;
+  text-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* ========== ANALİZ SAYFALARI ========== */
+.analysis-page {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.photo-section, .size-form {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 25px;
+  padding: 40px;
+  margin-bottom: 30px;
+  box-shadow: 0 15px 35px rgba(255, 107, 157, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.photo-section p {
+  color: #2d3748;
+  font-size: 1.2rem;
+  text-align: center;
+  margin-bottom: 30px;
+  font-weight: 400;
+}
+
+/* ========== DOSYA YÜKLEME ========== */
+.photo-input {
+  width: 100%;
+  padding: 20px;
+  border: 3px dashed rgba(255, 107, 157, 0.3);
+  border-radius: 20px;
+  background: rgba(255, 107, 157, 0.05);
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.photo-input:hover {
+  border-color: rgba(255, 107, 157, 0.6);
+  background: rgba(255, 107, 157, 0.1);
+  transform: translateY(-2px);
+}
+
+/* ========== FORM TASARIMI ========== */
+.form-group {
+  margin-bottom: 25px;
 }
 
 .form-group label {
   display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
+  color: #2d3748;
   font-size: 1.1rem;
+  font-weight: 500;
+  margin-bottom: 8px;
 }
 
 .form-group input,
 .form-group select {
   width: 100%;
-  padding: 12px;
-  border: none;
-  border-radius: 10px;
+  padding: 15px 20px;
+  border: 2px solid rgba(255, 107, 157, 0.2);
+  border-radius: 15px;
   font-size: 1rem;
-  background: rgba(255, 255, 255, 0.9);
-  box-sizing: border-box;
+  background: rgba(255, 255, 255, 0.8);
+  transition: all 0.3s ease;
 }
 
 .form-group input:focus,
 .form-group select:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+  border-color: #ff6b9d;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(255, 107, 157, 0.1);
+  transform: translateY(-1px);
 }
 
-button {
-  background: linear-gradient(45deg, #ff6b6b, #feca57);
+.form-group input::placeholder {
+  color: #a0aec0;
+  font-style: italic;
+}
+
+/* ========== BUTONLAR ========== */
+button[type="submit"] {
+  width: 100%;
+  background: linear-gradient(135deg, #ff6b9d, #c44569);
   color: white;
   border: none;
-  padding: 15px 30px;
-  font-size: 1.1rem;
-  font-weight: bold;
-  border-radius: 25px;
+  padding: 18px 30px;
+  border-radius: 50px;
+  font-size: 1.2rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: transform 0.2s;
-  margin-top: 10px;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 25px rgba(255, 107, 157, 0.3);
+  margin-top: 20px;
 }
 
-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+button[type="submit"]:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 35px rgba(255, 107, 157, 0.4);
+  background: linear-gradient(135deg, #ff8fab, #d63384);
 }
 
-button:disabled {
+button[type="submit"]:disabled {
   opacity: 0.7;
   cursor: not-allowed;
+  transform: none;
 }
 
+/* ========== SONUÇ ALANLARI ========== */
 .result {
   background: rgba(255, 255, 255, 0.95);
-  color: #333;
-  border-radius: 15px;
-  padding: 20px;
-  margin-top: 20px;
-  max-width: 500px;
-  text-align: left;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  backdrop-filter: blur(20px);
+  border-radius: 25px;
+  padding: 35px;
+  margin: 30px 0;
+  box-shadow: 0 15px 35px rgba(255, 107, 157, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .result h3 {
-  color: #667eea;
-  margin-bottom: 15px;
+  color: #2d3748;
+  font-size: 1.6rem;
+  margin-bottom: 20px;
+  font-weight: 600;
 }
 
 .result pre {
+  background: rgba(255, 107, 157, 0.05);
+  padding: 25px;
+  border-radius: 15px;
   white-space: pre-wrap;
-  font-family: 'Arial', sans-serif;
-  line-height: 1.6;
+  font-family: 'Poppins', sans-serif;
   font-size: 1rem;
-}
-/* Fotoğraf analizi bölümü için stiller */
-.photo-section {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border-radius: 20px;
-  padding: 30px;
-  margin: 20px 0;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-  max-width: 400px;
-  width: 100%;
+  line-height: 1.8;
+  color: #2d3748;
+  border-left: 4px solid #ff6b9d;
 }
 
-.photo-section h2 {
+/* ========== HATA MESAJLARI ========== */
+.error-result {
+  background: linear-gradient(135deg, #ff6b6b, #ee5a52) !important;
   color: white;
-  margin-bottom: 10px;
-  font-size: 1.5rem;
+  border: none !important;
 }
 
-.photo-section p {
-  color: rgba(255, 255, 255, 0.8);
-  margin-bottom: 20px;
-  font-size: 1rem;
-}
-
-.photo-input {
-  width: 100%;
-  padding: 15px;
-  border: 2px dashed rgba(255, 255, 255, 0.5);
-  border-radius: 15px;
-  background: transparent;
-  color: white;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.photo-input:hover {
-  border-color: rgba(255, 255, 255, 0.8);
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.photo-result {
-  background: rgba(255, 255, 255, 0.95);
-  color: #333;
-  border-radius: 15px;
-  padding: 20px;
-  margin-top: 20px;
-  text-align: left;
-  border: 3px solid #667eea;
-}
-
-.photo-result h3 {
-  color: #667eea;
+.error-content h3 {
+  color: white !important;
   margin-bottom: 15px;
 }
 
-.loading {
-  color: #feca57;
-  font-weight: bold;
+.error-message {
+  font-size: 1.1rem;
+  margin-bottom: 15px;
+  line-height: 1.6;
+}
+
+.retry-info {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 15px;
+  border-radius: 12px;
   margin: 15px 0;
-  animation: pulse 1.5s infinite;
+  font-size: 1rem;
 }
 
-@keyframes pulse {
-  0% { opacity: 1; }
-  50% { opacity: 0.5; }
-  100% { opacity: 1; }
-}
-
-.size-form h2 {
-  color: white;
-  margin-bottom: 20px;
-  font-size: 1.5rem;
-}
-/* Marka seçimi stilleri */
-.brand-selection {
+.quota-info {
+  background: rgba(255, 255, 255, 0.15);
+  padding: 20px;
+  border-radius: 15px;
   margin-top: 20px;
+  text-align: left;
+}
+
+.quota-info p {
+  margin: 10px 0;
+  font-size: 1rem;
+}
+
+.quota-info strong {
+  color: #feca57;
+}
+
+/* ========== MARKA SEÇİMİ ========== */
+.brand-selection {
+  margin-top: 30px;
+  text-align: center;
 }
 
 .brand-selection h4 {
-  color: #667eea;
-  margin-bottom: 15px;
+  color: #2d3748;
+  font-size: 1.4rem;
+  margin-bottom: 25px;
+  font-weight: 500;
 }
 
 .brand-buttons {
   display: flex;
-  gap: 10px;
   flex-wrap: wrap;
+  gap: 15px;
   justify-content: center;
 }
 
 .brand-btn {
-  background: linear-gradient(45deg, #667eea, #764ba2);
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 20px;
+  background: rgba(255, 107, 157, 0.1);
+  color: #c44569;
+  border: 2px solid rgba(255, 107, 157, 0.3);
+  padding: 12px 25px;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: 500;
   cursor: pointer;
-  font-weight: bold;
   transition: all 0.3s ease;
 }
 
 .brand-btn:hover {
+  background: rgba(255, 107, 157, 0.2);
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  box-shadow: 0 8px 20px rgba(255, 107, 157, 0.2);
 }
 
 .brand-btn.active {
-  background: linear-gradient(45deg, #ff6b6b, #feca57);
-  transform: translateY(-2px);
+  background: linear-gradient(135deg, #ff6b9d, #c44569);
+  color: white;
+  box-shadow: 0 8px 25px rgba(255, 107, 157, 0.4);
 }
 
-/* Ürün grid stilleri */
+/* ========== YÜKLEME ANİMASYONLARI ========== */
+.loading, .loading-products {
+  text-align: center;
+  padding: 30px;
+  color: #2d3748;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.loading p, .loading-products p {
+  background: rgba(255, 107, 157, 0.1);
+  padding: 20px;
+  border-radius: 15px;
+  display: inline-block;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.02); }
+  100% { opacity: 0.6; transform: scale(1); }
+}
+
+/* ========== ÜRÜN GRİDİ ========== */
 .products-section {
   background: rgba(255, 255, 255, 0.95);
-  color: #333;
-  border-radius: 20px;
-  padding: 30px;
-  margin: 20px 0;
-  max-width: 800px;
-  width: 100%;
+  backdrop-filter: blur(20px);
+  border-radius: 25px;
+  padding: 40px;
+  margin: 30px 0;
+  box-shadow: 0 15px 35px rgba(255, 107, 157, 0.1);
 }
 
 .products-section h2 {
-  color: #667eea;
-  margin-bottom: 20px;
+  color: #2d3748;
+  font-size: 2rem;
   text-align: center;
+  margin-bottom: 35px;
+  font-weight: 600;
 }
 
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
-  margin-top: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 25px;
+  padding: 0;
 }
 
 .product-card {
   background: white;
-  border-radius: 15px;
+  border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
   cursor: pointer;
-  transition: all 0.3s ease;
-  border: 2px solid transparent;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 8px 25px rgba(255, 107, 157, 0.1);
+  border: 1px solid rgba(255, 107, 157, 0.1);
 }
 
 .product-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-  border-color: #667eea;
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(255, 107, 157, 0.2);
+  border-color: rgba(255, 107, 157, 0.3);
 }
 
 .product-card img {
   width: 100%;
-  height: 200px;
+  height: 220px;
   object-fit: cover;
-  background: #f5f5f5;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #999;
-  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.product-card:hover img {
+  transform: scale(1.05);
 }
 
 .product-info {
-  padding: 15px;
+  padding: 20px;
+  text-align: center;
 }
 
 .product-info h4 {
-  color: #333;
-  margin: 0 0 8px 0;
-  font-size: 14px;
+  color: #2d3748;
+  font-size: 1.2rem;
+  margin-bottom: 8px;
   font-weight: 600;
 }
 
 .price {
-  color: #667eea;
-  font-weight: bold;
-  font-size: 16px;
-  margin: 5px 0;
+  color: #ff6b9d;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 12px;
 }
 
 .brand-tag {
-  background: linear-gradient(45deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #ff6b9d, #c44569);
   color: white;
-  padding: 4px 8px;
-  border-radius: 10px;
-  font-size: 11px;
-  font-weight: bold;
+  padding: 6px 15px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
   text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.loading-products {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border-radius: 15px;
-  padding: 20px;
-  margin: 20px 0;
-}
-
-.loading-products p {
-  color: #feca57;
-  font-weight: bold;
-  animation: pulse 1.5s infinite;
-}
-
-/* Responsive tasarım */
+/* ========== RESPONSİVE TASARIM ========== */
 @media (max-width: 768px) {
+  .home-page h1 {
+    font-size: 2.5rem;
+  }
+  
+  .home-subtitle {
+    font-size: 1.1rem;
+  }
+  
+  .analysis-options {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .analysis-card {
+    padding: 30px 20px;
+  }
+  
+  .page-header {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .page-header h1 {
+    font-size: 2rem;
+  }
+  
+  .photo-section, .size-form {
+    padding: 25px;
+  }
+  
   .products-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
   }
   
   .brand-buttons {
@@ -329,81 +542,61 @@ button:disabled {
   }
   
   .brand-btn {
-    width: 150px;
+    width: 200px;
   }
 }
-/* Resim yüklenmeme fallback */
-.product-card img {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 14px;
-  font-weight: bold;
+
+@media (max-width: 480px) {
+  .App-header {
+    padding: 10px;
+  }
+  
+  .home-page {
+    padding: 20px 10px;
+  }
+  
+  .home-page h1 {
+    font-size: 2rem;
+  }
+  
+  .analysis-card {
+    padding: 25px 15px;
+  }
+  
+  .photo-section, .size-form {
+    padding: 20px;
+  }
+  
+  .products-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
-.product-card img::before {
-  content: "👕 Ürün Resmi";
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* ========== ÖZEL EFEKTLER ========== */
+.App::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
   height: 100%;
-  width: 100%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+  pointer-events: none;
+  z-index: -1;
 }
 
-.product-card img[src=""] {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
 }
-/* Error result stilleri */
-.error-result {
-  background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+
+/* Selection color */
+::selection {
+  background: rgba(255, 107, 157, 0.3);
   color: white;
-  border: none;
-  box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
 }
 
-.error-content {
-  text-align: center;
-}
-
-.error-content h3 {
+::-moz-selection {
+  background: rgba(255, 107, 157, 0.3);
   color: white;
-  margin-bottom: 15px;
-  font-size: 1.3rem;
-}
-
-.error-message {
-  font-size: 1rem;
-  margin-bottom: 15px;
-  line-height: 1.5;
-}
-
-.retry-info {
-  background: rgba(255, 255, 255, 0.2);
-  padding: 12px;
-  border-radius: 10px;
-  margin: 15px 0;
-  font-size: 0.9rem;
-}
-
-.quota-info {
-  background: rgba(255, 255, 255, 0.15);
-  padding: 15px;
-  border-radius: 12px;
-  margin-top: 20px;
-  text-align: left;
-}
-
-.quota-info p {
-  margin: 8px 0;
-  font-size: 0.95rem;
-}
-
-.quota-info strong {
-  color: #feca57;
 }
