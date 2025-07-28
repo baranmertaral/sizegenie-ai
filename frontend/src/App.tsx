@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import './App.css';
 
 interface SizeRequest {
@@ -41,6 +41,27 @@ function App() {
   const [productsLoading, setProductsLoading] = useState(false);
 
   const brands = ['Zara', 'Pull & Bear', 'Stradivarius'];
+
+  // Optimized input handlers with useCallback
+  const handleHeightChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData(prev => ({...prev, user_height: Number(e.target.value)}));
+  }, []);
+
+  const handleWeightChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData(prev => ({...prev, user_weight: Number(e.target.value)}));
+  }, []);
+
+  const handleBrandChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData(prev => ({...prev, brand: e.target.value}));
+  }, []);
+
+  const handleProductNameChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData(prev => ({...prev, product_name: e.target.value}));
+  }, []);
+
+  const handleProductSizeChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
+    setFormData(prev => ({...prev, product_size: e.target.value}));
+  }, []);
 
   // Existing functions
   const handleSubmit = async (e: React.FormEvent) => {
@@ -326,7 +347,7 @@ function App() {
           <input
             type="number"
             value={formData.user_height}
-            onChange={(e) => setFormData({...formData, user_height: Number(e.target.value)})}
+            onChange={handleHeightChange}
           />
         </div>
         
@@ -335,7 +356,7 @@ function App() {
           <input
             type="number"
             value={formData.user_weight}
-            onChange={(e) => setFormData({...formData, user_weight: Number(e.target.value)})}
+            onChange={handleWeightChange}
           />
         </div>
         
@@ -344,7 +365,7 @@ function App() {
           <input
             type="text"
             value={formData.brand}
-            onChange={(e) => setFormData({...formData, brand: e.target.value})}
+            onChange={handleBrandChange}
             placeholder="örn: Zara, H&M, Nike"
           />
         </div>
@@ -354,7 +375,7 @@ function App() {
           <input
             type="text"
             value={formData.product_name}
-            onChange={(e) => setFormData({...formData, product_name: e.target.value})}
+            onChange={handleProductNameChange}
             placeholder="örn: Basic T-Shirt, Jeans"
           />
         </div>
@@ -363,7 +384,7 @@ function App() {
           <label>Beden:</label>
           <select
             value={formData.product_size}
-            onChange={(e) => setFormData({...formData, product_size: e.target.value})}
+            onChange={handleProductSizeChange}
           >
             <option value="XS">XS</option>
             <option value="S">S</option>
