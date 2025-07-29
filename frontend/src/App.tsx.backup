@@ -26,7 +26,7 @@ interface ChatMessage {
   timestamp: number;
 }
 
-type AnalysisType = 'splash' | 'home' | 'photo' | 'size' | 'chat' | 'size-guide' | 'history';
+type AnalysisType = 'splash' | 'home' | 'photo' | 'size' | 'chat' | 'size-guide';
 
 function App() {
   // Ana state - splash ile başlıyor
@@ -61,101 +61,23 @@ function App() {
 
   const brands = ['Zara', 'Pull & Bear', 'Stradivarius'];
 
-  // GERÇEK BEDEN KARŞILAŞTIRMA VERİSİ (Araştırma Bazlı)
+  // Beden karşılaştırma verisi
   const sizeChart = {
     kadın: {
-      XS: { 
-        Zara: "XS", 
-        "Pull & Bear": "XXS", 
-        Stradivarius: "XS", 
-        "H&M": "32", 
-        Mango: "XS",
-        "Genel": "XS denk"
-      },
-      S: { 
-        Zara: "S", 
-        "Pull & Bear": "XS", 
-        Stradivarius: "S", 
-        "H&M": "34/36", 
-        Mango: "S",
-        "Genel": "S denk"
-      },
-      M: { 
-        Zara: "M", 
-        "Pull & Bear": "S", 
-        Stradivarius: "M", 
-        "H&M": "38", 
-        Mango: "M",
-        "Genel": "M denk"
-      },
-      L: { 
-        Zara: "L", 
-        "Pull & Bear": "M", 
-        Stradivarius: "L", 
-        "H&M": "40", 
-        Mango: "L",
-        "Genel": "L denk"
-      },
-      XL: { 
-        Zara: "XL", 
-        "Pull & Bear": "L", 
-        Stradivarius: "XL", 
-        "H&M": "42", 
-        Mango: "XL",
-        "Genel": "XL denk"
-      },
-      XXL: { 
-        Zara: "XXL", 
-        "Pull & Bear": "XL", 
-        Stradivarius: "XXL", 
-        "H&M": "44", 
-        Mango: "XXL",
-        "Genel": "XXL denk"
-      }
+      XS: { Zara: "XS", "Pull & Bear": "XS", Stradivarius: "XS", "H&M": "32", Mango: "XS" },
+      S: { Zara: "S", "Pull & Bear": "S", Stradivarius: "S", "H&M": "34", Mango: "S" },
+      M: { Zara: "M", "Pull & Bear": "M", Stradivarius: "M", "H&M": "36", Mango: "M" },
+      L: { Zara: "L", "Pull & Bear": "L", Stradivarius: "L", "H&M": "38", Mango: "L" },
+      XL: { Zara: "XL", "Pull & Bear": "L", Stradivarius: "XL", "H&M": "40", Mango: "XL" },
+      XXL: { Zara: "XXL", "Pull & Bear": "XL", Stradivarius: "XXL", "H&M": "42", Mango: "XXL" }
     },
     erkek: {
-      XS: { 
-        Zara: "XS", 
-        "Pull & Bear": "XS", 
-        "H&M": "44", 
-        Mango: "XS",
-        "Genel": "XS denk"
-      },
-      S: { 
-        Zara: "S", 
-        "Pull & Bear": "XS", 
-        "H&M": "46", 
-        Mango: "S",
-        "Genel": "S denk"
-      },
-      M: { 
-        Zara: "M", 
-        "Pull & Bear": "S", 
-        "H&M": "48", 
-        Mango: "M",
-        "Genel": "M denk"
-      },
-      L: { 
-        Zara: "L", 
-        "Pull & Bear": "M", 
-        "H&M": "50", 
-        Mango: "L",
-        "Genel": "L denk"
-      },
-      XL: { 
-        Zara: "XL", 
-        "Pull & Bear": "L", 
-        "H&M": "52", 
-        Mango: "XL",
-        "Genel": "XL denk"
-      },
-      XXL: { 
-        Zara: "XXL", 
-        "Pull & Bear": "XL", 
-        "H&M": "54", 
-        Mango: "XXL",
-        "Genel": "XXL denk"
-      }
+      XS: { Zara: "XS", "Pull & Bear": "XS", Stradivarius: "XS", "H&M": "44", Mango: "XS" },
+      S: { Zara: "S", "Pull & Bear": "S", Stradivarius: "S", "H&M": "46", Mango: "S" },
+      M: { Zara: "M", "Pull & Bear": "M", Stradivarius: "M", "H&M": "48", Mango: "M" },
+      L: { Zara: "L", "Pull & Bear": "L", Stradivarius: "L", "H&M": "50", Mango: "L" },
+      XL: { Zara: "XL", "Pull & Bear": "XL", Stradivarius: "XL", "H&M": "52", Mango: "XL" },
+      XXL: { Zara: "XXL", "Pull & Bear": "XXL", Stradivarius: "XXL", "H&M": "54", Mango: "XXL" }
     }
   };
 
@@ -177,16 +99,6 @@ function App() {
       localStorage.setItem('aura_analysis_history', JSON.stringify(updatedHistory));
     } catch (error) {
       console.log('LocalStorage kullanılamıyor');
-    }
-  };
-
-  // Geçmişi temizleme fonksiyonu
-  const clearHistory = () => {
-    setAnalysisHistory([]);
-    try {
-      localStorage.removeItem('aura_analysis_history');
-    } catch (error) {
-      console.log('LocalStorage temizlenemedi');
     }
   };
 
@@ -449,13 +361,14 @@ function App() {
       setChatMessages(prev => [...prev, errorMessage]);
     } finally {
       setChatLoading(false);
+      // Focus'u geri ver
       if (chatInputRef.current) {
         chatInputRef.current.focus();
       }
     }
   };
 
-  // SPLASH SAYFASI
+  // SPLASH SAYFASI - YENİ!
   const SplashPage = () => (
     <div className="splash-page">
       <div className="splash-content">
@@ -481,15 +394,6 @@ function App() {
       <div className="home-header">
         <div className="aura-logo-small">AURA</div>
         <p className="home-subtitle">AI destekli kıyafet beden önerisi ve ürün analizi</p>
-        
-        {/* YENİ: Geçmiş butonu */}
-        <button 
-          className="history-btn"
-          onClick={() => setCurrentPage('history')}
-          title="Analiz Geçmişi"
-        >
-          📜 Geçmiş ({analysisHistory.length})
-        </button>
       </div>
       
       <div className="analysis-selection">
@@ -521,14 +425,13 @@ function App() {
               <p>Hayalinizdeki ürünü tarif edin, size bulalım!</p>
               <button className="analysis-btn">Chat Başlat</button>
             </div>
-          </div>
-          
-          <div className="analysis-card" onClick={() => setCurrentPage('size-guide')}>
-            <div className="analysis-icon">📊</div>
-            <div className="analysis-card-content">
-              <h3>Beden Rehberi</h3>
-              <p>Markalar arası beden karşılaştırması</p>
-              <button className="analysis-btn">Beden Rehberi</button>
+            <div className="analysis-card" onClick={() => setCurrentPage('size-guide')}>
+              <div className="analysis-icon">📊</div>
+              <div className="analysis-card-content">
+                <h3>Beden Rehberi</h3>
+                <p>Markalar arası beden karşılaştırması ve geçmiş analizleriniz</p>
+                <button className="analysis-btn">Beden Rehberi</button>
+              </div>
             </div>
           </div>
         </div>
@@ -848,7 +751,7 @@ function App() {
     </div>
   );
 
-  // Beden Rehberi Sayfası - Stradivarius erkek için gizlendi
+  // Beden Rehberi Sayfası - YENİ!
   const SizeGuidePage = () => (
     <div className="analysis-page">
       <div className="page-header">
@@ -862,17 +765,7 @@ function App() {
         {/* Beden Karşılaştırma Tablosu */}
         <div className="size-comparison">
           <h2>🔄 Markalar Arası Beden Karşılaştırması</h2>
-          <p>Bir markada hangi bedeni giyiyorsanız, diğer markalarda hangi bedeni seçmelisiniz? <strong>Gerçek marka araştırması bazlı!</strong></p>
-          
-          <div className="comparison-legend">
-            <h4>📋 Nasıl Kullanılır:</h4>
-            <p>• <strong>Soldaki sütun:</strong> Standart beden ölçünüz</p>
-            <p>• <strong>Diğer sütunlar:</strong> Her markada almanız gereken beden</p>
-            <p>• <strong>Not:</strong> Pull & Bear genelde büyük gelir, H&M sayısal sistem kullanır</p>
-            {gender === 'erkek' && (
-              <p>• <strong>Erkek Not:</strong> Stradivarius'ta erkek koleksiyonu bulunmamaktadır</p>
-            )}
-          </div>
+          <p>Bir markada hangi bedeni giyiyorsanız, diğer markalarda hangi bedeni seçmelisiniz?</p>
           
           <div className="gender-tabs">
             <button 
@@ -893,10 +786,10 @@ function App() {
             <table className="comparison-table">
               <thead>
                 <tr>
-                  <th>Sizin Bedeniniz</th>
+                  <th>Standart</th>
                   <th>Zara</th>
                   <th>Pull & Bear</th>
-                  {gender === 'kadın' && <th>Stradivarius</th>}
+                  <th>Stradivarius</th>
                   <th>H&M</th>
                   <th>Mango</th>
                 </tr>
@@ -905,88 +798,27 @@ function App() {
                 {Object.entries(sizeChart[gender as keyof typeof sizeChart]).map(([size, brands]) => (
                   <tr key={size}>
                     <td className="size-standard">{size}</td>
-                    <td className="brand-zara">{brands.Zara}</td>
-                    <td className="brand-pb">{brands["Pull & Bear"]}</td>
-                    {gender === 'kadın' && (
-                      <td className="brand-str">{(brands as any).Stradivarius}</td>
-                    )}
-                    <td className="brand-hm">{brands["H&M"]}</td>
-                    <td className="brand-mango">{brands.Mango}</td>
+                    <td>{brands.Zara}</td>
+                    <td>{brands["Pull & Bear"]}</td>
+                    <td>{brands.Stradivarius}</td>
+                    <td>{brands["H&M"]}</td>
+                    <td>{brands.Mango}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-          
-          <div className="size-tips">
-            <h4>💡 Marka Özel İpuçları:</h4>
-            <div className="brand-tips">
-              <div className="tip">
-                <strong>🏷️ Zara:</strong> Dar kesim, özellikle üst giyimde. Genelde 1 beden büyük alın.
-              </div>
-              <div className="tip">
-                <strong>🐻 Pull & Bear:</strong> En geniş kesim. Genelde 1-2 beden küçük alabilirsiniz.
-              </div>
-              {gender === 'kadın' && (
-                <div className="tip">
-                  <strong>🎵 Stradivarius:</strong> Zara ile benzer ama biraz daha rahat.
-                </div>
-              )}
-              <div className="tip">
-                <strong>🏠 H&M:</strong> Sayısal sistem kullanır. {gender === 'kadın' ? 'Kadın için 36-38 ortalama M bedeni.' : 'Erkek için 48-50 ortalama M bedeni.'}
-              </div>
-              <div className="tip">
-                <strong>🥭 Mango:</strong> Standart Avrupa bedenleri, güvenilir ölçüler.
-              </div>
-            </div>
-          </div>
         </div>
-      </div>
-    </div>
-  );
 
-  // YENİ: Geçmiş Sayfası
-  const HistoryPage = () => (
-    <div className="analysis-page">
-      <div className="page-header">
-        <button className="back-btn" onClick={() => setCurrentPage('home')}>
-          ← Geri Dön
-        </button>
-        <h1>📜 Analiz Geçmişi</h1>
-        {analysisHistory.length > 0 && (
-          <button 
-            className="clear-history-btn"
-            onClick={clearHistory}
-            title="Tüm geçmişi temizle"
-          >
-            🗑️ Geçmişi Temizle
-          </button>
-        )}
-      </div>
-      
-      <div className="history-container">
+        {/* Analiz Geçmişi */}
         <div className="analysis-history">
-          <h2>📊 Son Analizleriniz</h2>
-          <p>Yaptığınız tüm analizler ve sonuçları</p>
+          <h2>📜 Analiz Geçmişiniz</h2>
+          <p>Son yaptığınız analizler ve sonuçları</p>
           
           {analysisHistory.length === 0 ? (
             <div className="no-history">
               <p>Henüz analiz geçmişiniz bulunmuyor.</p>
               <p>Beden analizi veya fotoğraf analizi yaptığınızda burada görünecek!</p>
-              <div className="history-actions">
-                <button 
-                  className="history-action-btn" 
-                  onClick={() => setCurrentPage('size')}
-                >
-                  📏 Beden Analizi Yap
-                </button>
-                <button 
-                  className="history-action-btn" 
-                  onClick={() => setCurrentPage('photo')}
-                >
-                  📸 Fotoğraf Analizi Yap
-                </button>
-              </div>
             </div>
           ) : (
             <div className="history-list">
@@ -1007,12 +839,6 @@ function App() {
                         <p><strong>📏 Boy/Kilo:</strong> {item.data.height}cm / {item.data.weight}kg</p>
                         <p><strong>🏷️ Ürün:</strong> {item.data.brand} {item.data.product} ({item.data.size})</p>
                         <p><strong>📊 BMI:</strong> {item.data.bmi?.toFixed(1)}</p>
-                        <div className="history-result">
-                          <strong>🎯 Sonuç:</strong>
-                          <div className="result-preview">
-                            {item.data.result?.substring(0, 200)}...
-                          </div>
-                        </div>
                       </div>
                     )}
                     
@@ -1020,10 +846,7 @@ function App() {
                       <div className="photo-history">
                         <p><strong>🤖 AI Tipi:</strong> {item.data.ai_type}</p>
                         <div className="analysis-preview">
-                          <strong>📊 Analiz:</strong>
-                          <div className="result-preview">
-                            {item.data.analysis?.substring(0, 200)}...
-                          </div>
+                          {item.data.analysis?.substring(0, 150)}...
                         </div>
                       </div>
                     )}
@@ -1036,21 +859,5 @@ function App() {
       </div>
     </div>
   );
-
-  // Ana render
-  return (
-    <div className="App">
-      <header className="App-header">
-        {currentPage === 'splash' && <SplashPage />}
-        {currentPage === 'home' && <HomePage />}
-        {currentPage === 'photo' && <PhotoAnalysisPage />}
-        {currentPage === 'size' && <SizeAnalysisPage />}
-        {currentPage === 'chat' && <ChatPage />}
-        {currentPage === 'size-guide' && <SizeGuidePage />}
-        {currentPage === 'history' && <HistoryPage />}
-      </header>
-    </div>
-  );
-}
 
 export default App;
