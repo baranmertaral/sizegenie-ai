@@ -51,10 +51,181 @@ function App() {
   const [chatLoading, setChatLoading] = useState(false);
   const [conversationId, setConversationId] = useState<string>('');
 
+  // Dinamik AI düşünme mesajları
+  const [thinkingMessage, setThinkingMessage] = useState<string>('');
+
+  // AI düşünme mesajlarını döngüsel olarak değiştir
+  React.useEffect(() => {
+    if (chatLoading) {
+      const messages = [
+        'Stil danışmanınız düşünüyor...',
+        'Trendleri analiz ediyorum...',
+        'Size özel öneriler hazırlıyorum...',
+        'En uygun ürünleri buluyorum...',
+        'Vücut tipinizi değerlendiriyorum...'
+      ];
+      
+      let currentIndex = 0;
+      setThinkingMessage(messages[0]);
+      
+      const interval = setInterval(() => {
+        currentIndex = (currentIndex + 1) % messages.length;
+        setThinkingMessage(messages[currentIndex]);
+      }, 800);
+      
+      return () => clearInterval(interval);
+    }
+  }, [chatLoading]);
+
   // REFS FOR UNCONTROLLED INPUTS
   const brandInputRef = useRef<HTMLInputElement>(null);
   const productInputRef = useRef<HTMLInputElement>(null);
   const chatInputRef = useRef<HTMLInputElement>(null);
+
+  // Trend analysis states
+  const [trendData, setTrendData] = useState<any>(null);
+  const [trendLoading, setTrendLoading] = useState(false);
+
+  // Sosyal paylaşım states
+  const [shareModalOpen, setShareModalOpen] = useState(false);
+  const [shareContent, setShareContent] = useState<any>(null);
+
+  // Sosyal paylaşım fonksiyonları
+  const generateShareText = (type: string, data: any) => {
+    const baseUrl = window.location.origin;
+    
+    switch (type) {
+      case 'size_analysis':
+        return `🎯 AURA AI ile beden analizimi yaptırdım!
+
+✅ ${data.size} bedeni bana ${data.fits ? 'uyuyormuş' : 'uymuyor'}
+📊 BMI hesabım: ${data.bmi?.toFixed(1)} 
+👤 ${data.gender} için ${data.brand} ${data.product}
+🤖 Yapay zeka önerisiyle doğru beden buldum!
+
+#AuraAI #BedenAnalizi #AI #Fashion
+
+${baseUrl}`;
+
+      case 'photo_analysis':
+        return `📸 AURA AI vücut tipimi analiz etti!
+
+🔹 Vücut Tipim: ${data.bodyType || 'Analiz edildi'}
+🎯 AI önerileri aldım ve hangi kıyafetlerin yakıştığını öğrendim!
+🤖 Gemini Vision AI ile gerçek analiz!
+
+#AuraAI #VücutTipi #AIAnaliz #Moda
+
+${baseUrl}`;
+
+      case 'chat_recommendations':
+        return `🤖 AURA AI stil danışmanım harika öneriler verdi!
+
+💭 "${data.userMessage}" dedim
+✨ ${data.productCount} farklı seçenek buldu
+🎯 Hem trendleri hem vücut tipimi düşündü
+
+#AuraAI #AIAsistan #Moda #Alışveriş
+
+${baseUrl}`;
+
+      case 'trends':
+        return `📈 AURA AI ile bu haftanın moda trendlerini keşfettim!
+
+🔥 En trend: ${data.topTrend}
+📊 Hafta ${data.weekNumber} trend analizi
+🤖 AI ile kişiselleştirilmiş moda önerileri!
+
+#AuraAI #ModaTrendi #AI #Fashion
+
+${baseUrl}`;
+
+      default:
+        return `🤖 AURA AI ile kıyafet ve beden analizi yaptırdım!
+
+✨ AI destekli moda önerileri
+🎯 Kişiselleştirilmiş stil danışmanlığı
+📊 Gerçek zamanlı trend analizi
+
+#AuraAI #AI #Moda #Fashion
+
+${baseUrl}`;
+    }
+  };
+
+  const handleShare = async (type: string, data: any) => {
+    const shareText = generateShareText(type, data);
+    setShareContent({ type, data, text: shareText });
+    setShareModalOpen(true);
+  };
+
+  const handleNativeShare = async () => {
+    if (typeof navigator !== 'undefined' && 'share' in navigator && shareContent) {
+      try {
+        await navigator.share({
+          title: 'AURA AI - Kıyafet & Beden Analizi',
+          text: shareContent.text,
+          url: window.location.origin
+        });
+        setShareModalOpen(false);
+      } catch (error) {
+        console.log('Native share failed:', error);
+        // Fallback to clipboard
+        handleCopyToClipboard();
+      }
+    } else {
+      handleCopyToClipboard();
+    }
+  };
+
+  const handleCopyToClipboard = async () => {
+    if (shareContent) {
+      try {
+        await navigator.clipboard.writeText(shareContent.text);
+        alert('📋 Panoya kopyalandı! Sosyal medyada paylaşabilirsiniz.');
+        setShareModalOpen(false);
+      } catch (error) {
+        // Fallback for older browsers
+        const textArea = document.createElement('textarea');
+        textArea.value = shareContent.text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        alert('📋 Panoya kopyalandı!');
+        setShareModalOpen(false);
+      }
+    }
+  };
+
+  const handleSocialShare = (platform: string) => {
+    if (!shareContent) return;
+    
+    const text = encodeURIComponent(shareContent.text);
+    const url = encodeURIComponent(window.location.origin);
+    
+    let shareUrl = '';
+    
+    switch (platform) {
+      case 'twitter':
+        shareUrl = `https://twitter.com/intent/tweet?text=${text}`;
+        break;
+      case 'facebook':
+        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${text}`;
+        break;
+      case 'whatsapp':
+        shareUrl = `https://wa.me/?text=${text}`;
+        break;
+      case 'linkedin':
+        shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${url}&summary=${text}`;
+        break;
+    }
+    
+    if (shareUrl) {
+      window.open(shareUrl, '_blank', 'width=600,height=400');
+      setShareModalOpen(false);
+    }
+  };
 
   // Analysis history state
   const [analysisHistory, setAnalysisHistory] = useState<any[]>([]);
@@ -179,6 +350,41 @@ function App() {
       console.log('LocalStorage kullanılamıyor');
     }
   };
+
+  // Trend analizi çekme fonksiyonu
+  const fetchTrendData = async (category?: string, bodyType?: string) => {
+    setTrendLoading(true);
+    try {
+      const response = await fetch('http://localhost:8000/get-trends', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          category: category || null,
+          body_type: bodyType || null,
+          price_range: null
+        }),
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setTrendData(data);
+        console.log('✅ Trend verileri alındı:', data);
+      } else {
+        console.error('❌ Trend verisi alınamadı');
+      }
+    } catch (error) {
+      console.error('❌ Trend API hatası:', error);
+    } finally {
+      setTrendLoading(false);
+    }
+  };
+
+  // Sayfa yüklendiğinde trend verilerini al
+  React.useEffect(() => {
+    fetchTrendData();
+  }, []);
 
   // Geçmişi temizleme fonksiyonu
   const clearHistory = () => {
@@ -388,7 +594,7 @@ function App() {
     }
   };
 
-  // Chat send function - REF'DEN DEĞER AL
+  // Chat send function - GERÇEK AI DÜŞÜNMİ SÜRESİ İLE
   const handleChatSend = async () => {
     const chatInput = chatInputRef.current?.value?.trim();
     if (!chatInput || chatLoading) return;
@@ -408,6 +614,10 @@ function App() {
     setChatMessages(prev => [...prev, newUserMessage]);
     
     try {
+      // AI düşünme süresi simülasyonu (1.5-3 saniye arası)
+      const thinkingTime = Math.random() * 1500 + 1500; // 1.5-3 saniye
+      await new Promise(resolve => setTimeout(resolve, thinkingTime));
+      
       const response = await fetch('http://localhost:8000/chat-product-search', {
         method: 'POST',
         headers: {
@@ -455,6 +665,77 @@ function App() {
     }
   };
 
+  // Paylaşım Modal Komponenti
+  const ShareModal = () => {
+    if (!shareModalOpen || !shareContent) return null;
+
+    return (
+      <div className="share-modal-overlay" onClick={() => setShareModalOpen(false)}>
+        <div className="share-modal" onClick={(e) => e.stopPropagation()}>
+          <div className="share-modal-header">
+            <h3>📤 Sonucunuzu Paylaşın</h3>
+            <button 
+              className="share-modal-close"
+              onClick={() => setShareModalOpen(false)}
+            >
+              ✕
+            </button>
+          </div>
+          
+          <div className="share-preview">
+            <p className="share-preview-text">{shareContent.text}</p>
+          </div>
+          
+          <div className="share-options">
+            {typeof navigator !== 'undefined' && 'share' in navigator && (
+              <button 
+                className="share-option share-native"
+                onClick={handleNativeShare}
+              >
+                📱 Paylaş
+              </button>
+            )}
+            
+            <button 
+              className="share-option share-copy"
+              onClick={handleCopyToClipboard}
+            >
+              📋 Kopyala
+            </button>
+            
+            <button 
+              className="share-option share-twitter"
+              onClick={() => handleSocialShare('twitter')}
+            >
+              🐦 Twitter
+            </button>
+            
+            <button 
+              className="share-option share-facebook"
+              onClick={() => handleSocialShare('facebook')}
+            >
+              📘 Facebook
+            </button>
+            
+            <button 
+              className="share-option share-whatsapp"
+              onClick={() => handleSocialShare('whatsapp')}
+            >
+              💬 WhatsApp
+            </button>
+            
+            <button 
+              className="share-option share-linkedin"
+              onClick={() => handleSocialShare('linkedin')}
+            >
+              💼 LinkedIn
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   // SPLASH SAYFASI
   const SplashPage = () => (
     <div className="splash-page">
@@ -490,6 +771,68 @@ function App() {
         >
           📜 Geçmiş ({analysisHistory.length})
         </button>
+      </div>
+
+      {/* YENİ: Trend Analizi Bölümü */}
+      <div className="trend-section">
+        <h2>📈 Bu Haftanın Trendleri</h2>
+        {trendLoading ? (
+          <div className="trend-loading">
+            <p>🔄 Trend verileri yükleniyor...</p>
+          </div>
+        ) : trendData && trendData.success ? (
+          <div className="trend-container">
+            <div className="trend-insights">
+              <div className="trend-insights-card">
+                <h3>🧠 AI Trend Analizi</h3>
+                <p>{trendData.insights}</p>
+                <div className="trend-meta">
+                  <span>📅 Hafta {trendData.week_number}</span>
+                  <span>🛍️ {trendData.total_products} trend ürün</span>
+                </div>
+              </div>
+            </div>
+            
+            {trendData.trends && trendData.trends.length > 0 && (
+              <div className="trend-products">
+                <h4>🔥 En Çok Aranan Ürünler</h4>
+                <div className="trend-grid">
+                  {trendData.trends.slice(0, 6).map((trend: any, index: number) => (
+                    <div key={index} className="trend-card">
+                      <div className="trend-rank">#{index + 1}</div>
+                      <div className="trend-info">
+                        <h5>{trend.product_name}</h5>
+                        <p className="trend-brand">{trend.brand}</p>
+                        <div className="trend-stats">
+                          <span className="trend-score">📊 {trend.trend_score}% trend</span>
+                          {trend.price_range && (
+                            <span className="trend-price">💰 {trend.price_range}</span>
+                          )}
+                        </div>
+                      </div>
+                      <div className="trend-arrow">📈</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            
+            <div className="trend-actions">
+              <button 
+                className="trend-refresh-btn"
+                onClick={() => fetchTrendData()}
+                disabled={trendLoading}
+              >
+                🔄 Trendleri Yenile
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="trend-error">
+            <p>⚠️ Trend verileri şu anda yüklenemiyor</p>
+            <button onClick={() => fetchTrendData()}>🔄 Tekrar Dene</button>
+          </div>
+        )}
       </div>
       
       <div className="analysis-selection">
@@ -577,6 +920,19 @@ function App() {
               <>
                 <h3>📊 Gerçek AI Vücut Analizi:</h3>
                 <pre>{photoResult.analysis}</pre>
+                
+                {/* YENİ: Fotoğraf Analizi Paylaş Butonu */}
+                <div className="result-actions">
+                  <button 
+                    className="share-btn"
+                    onClick={() => handleShare('photo_analysis', {
+                      bodyType: photoResult.analysis?.match(/Vücut Tipi:\*\* (.+)/)?.[1] || 'Analiz edildi',
+                      aiType: photoResult.ai_type
+                    })}
+                  >
+                    📤 Analizi Paylaş
+                  </button>
+                </div>
                 
                 <div className="brand-selection">
                   <h4>🛍️ Hangi markadan öneri istiyorsunuz?</h4>
@@ -728,6 +1084,23 @@ function App() {
               <h3>📊 AI Beden Uygunluk Analizi:</h3>
               <pre>{result.recommendation}</pre>
               
+              {/* YENİ: Paylaşım Butonu */}
+              <div className="result-actions">
+                <button 
+                  className="share-btn"
+                  onClick={() => handleShare('size_analysis', {
+                    size: productSize,
+                    fits: result.recommendation?.includes('EVET'),
+                    bmi: result.bmi,
+                    gender: gender,
+                    brand: brandInputRef.current?.value,
+                    product: productInputRef.current?.value
+                  })}
+                >
+                  📤 Sonucu Paylaş
+                </button>
+              </div>
+              
               <div className="next-step-info">
                 <h4>🎯 Diğer Özellikler:</h4>
                 <p>• <strong>Fotoğraf Analizi</strong> ile vücut tipinizi keşfedin</p>
@@ -754,25 +1127,51 @@ function App() {
     </div>
   );
 
-  // Chat Sayfası - UNCONTROLLED INPUT
+  // Chat Sayfası - GELIŞMIŞ AI STİL DANIŞMANI
   const ChatPage = () => (
     <div className="analysis-page">
       <div className="page-header">
         <button className="back-btn" onClick={() => setCurrentPage('home')}>
           ← Geri Dön
         </button>
-        <h1>🤖 AI Ürün Asistanı</h1>
+        <h1>🤖 AI Stil Danışmanı</h1>
+        <div className="ai-consultant-badge">
+          <span>✨ Trend + Kişisel Analiz</span>
+        </div>
       </div>
       
       <div className="chat-container">
         <div className="chat-messages">
           {chatMessages.length === 0 && (
             <div className="chat-welcome">
-              <h3>👋 Merhaba! Size nasıl yardımcı olabilirim?</h3>
-              <p>İstediğiniz ürünü detaylıca tarif edin, size en uygun seçenekleri bulayım.</p>
+              <h3>👋 Merhaba! Ben AURA'nın AI Stil Danışmanınızım!</h3>
+              <p>Size özel stil önerileri sunuyorum. Vücut tipinizi, trendleri ve tercihlerinizi analiz ederek en uygun kıyafetleri buluyorum.</p>
+              
+              <div className="ai-features">
+                <div className="ai-feature">
+                  <span className="feature-icon">📈</span>
+                  <span>Güncel trendleri takip ederim</span>
+                </div>
+                <div className="ai-feature">
+                  <span className="feature-icon">👤</span>
+                  <span>Vücut tipinize özel önerilerim</span>
+                </div>
+                <div className="ai-feature">
+                  <span className="feature-icon">💰</span>
+                  <span>Bütçenize uygun seçenekleri bulurum</span>
+                </div>
+                <div className="ai-feature">
+                  <span className="feature-icon">🎨</span>
+                  <span>Stil tercihlerinizi öğrenirim</span>
+                </div>
+              </div>
+              
               <div className="example-messages">
-                <p><strong>Örnek:</strong> "Beyaz, oversize, vintage tarzı bir tişört istiyorum"</p>
-                <p><strong>Örnek:</strong> "Yüksek bel, wide leg bir jean arıyorum"</p>
+                <h4>✨ Örnek sorular:</h4>
+                <p><strong>"200 TL altında kış için hoodie önerisi"</strong></p>
+                <p><strong>"Rectangle vücut tipim için trend elbiseler"</strong></p>
+                <p><strong>"İş için şık ama rahat kıyafetler"</strong></p>
+                <p><strong>"Bu sezon hangi renkler moda?"</strong></p>
               </div>
             </div>
           )}
@@ -784,7 +1183,7 @@ function App() {
                 
                 {message.products && message.products.length > 0 && (
                   <div className="chat-products">
-                    <h4>🛍️ Sizin için bulduğum ürünler:</h4>
+                    <h4>🛍️ Size özel stil önerilerim:</h4>
                     <div className="chat-products-grid">
                       {message.products.map((product, pIndex) => (
                         <div key={pIndex} className="chat-product-card" onClick={() => window.open(product.url, '_blank')}>
@@ -800,6 +1199,22 @@ function App() {
                         </div>
                       ))}
                     </div>
+                    
+                    {/* YENİ: Chat Önerileri Paylaş Butonu */}
+                    <div className="chat-actions">
+                      <button 
+                        className="share-btn chat-share-btn"
+                        onClick={() => {
+                          const userMsg = chatMessages.find(msg => msg.role === 'user');
+                          handleShare('chat_recommendations', {
+                            userMessage: userMsg?.content || 'Ürün önerisi istedim',
+                            productCount: message.products?.length || 0
+                          });
+                        }}
+                      >
+                        📤 Önerileri Paylaş
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>
@@ -809,10 +1224,16 @@ function App() {
           {chatLoading && (
             <div className="message assistant">
               <div className="message-content">
-                <div className="typing-indicator">
-                  <span></span>
-                  <span></span>
-                  <span></span>
+                <div className="ai-thinking">
+                  <span className="ai-avatar">🤖</span>
+                  <div className="thinking-text">
+                    <p>{thinkingMessage}</p>
+                    <div className="typing-indicator">
+                      <span></span>
+                      <span></span>
+                      <span></span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -824,7 +1245,7 @@ function App() {
             <input
               ref={chatInputRef}
               type="text"
-              placeholder="İstediğiniz ürünü tarif edin..."
+              placeholder="Stil ihtiyacınızı detaylıca anlatın... (örn: 'İş için şık pantolon arıyorum, bütçem 300 TL')"
               className="chat-input"
               disabled={chatLoading}
               autoComplete="off"
@@ -839,9 +1260,14 @@ function App() {
               onClick={handleChatSend}
               disabled={chatLoading}
               className="chat-send-btn"
+              title="Stil Danışmanına Sor"
             >
-              {chatLoading ? '⏳' : '📤'}
+              {chatLoading ? '🤔' : '✨'}
             </button>
+          </div>
+          
+          <div className="chat-tips">
+            <p>💡 <strong>İpucu:</strong> Ne kadar detay verirseniz, o kadar kişisel öneriler alırsınız!</p>
           </div>
         </div>
       </div>
@@ -1049,6 +1475,9 @@ function App() {
         {currentPage === 'size-guide' && <SizeGuidePage />}
         {currentPage === 'history' && <HistoryPage />}
       </header>
+      
+      {/* Sosyal Paylaşım Modal */}
+      <ShareModal />
     </div>
   );
 }
