@@ -607,9 +607,9 @@ Bu proje **MIT Lisansı** altında lisanslanmıştır. Detaylar için `LICENSE` 
 ## 📞 İletişim ve Destek
 
 ### Proje Geliştiricisi
-- **GitHub**: [@yourusername](https://github.com/yourusername)
-- **Email**: your.email@example.com
-- **LinkedIn**: [Your LinkedIn Profile](https://linkedin.com/in/yourprofile)
+- **GitHub**: [@baranmertaral](https://github.com/baranmertaral)
+- **Email**: baranmertarall@gmail.com
+- **LinkedIn**: [BaranMertAral](https://linkedin.com/in/baranmertaral)
 
 ### Destek ve Geri Bildirim
 - **Issues**: GitHub Issues üzerinden bug raporu
