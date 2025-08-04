@@ -11,32 +11,20 @@ class ProductScraper:
             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
         }
         
-        # GÜNCELLENMİŞ MARKA-CİNSİYET UYUMLULUĞU
+        # SADECE 4 MARKA - MARKA-CİNSİYET UYUMLULUĞU
         self.brand_gender_support = {
             'Zara': ['kadın', 'erkek'],
-            'Pull & Bear': ['kadın', 'erkek'], 
-            'H&M': ['kadın', 'erkek'],
             'Trendyol': ['kadın', 'erkek'],
-            'Koton': ['kadın', 'erkek'],
-            'Stradivarius': ['kadın'],  # SADECE KADIN
-            'Bershka': ['kadın', 'erkek'],
-            'Mango': ['kadın'],  # SADECE KADIN
-            'DeFacto': ['kadın', 'erkek'],  # YENİ
-            'LC Waikiki': ['kadın', 'erkek']  # YENİ
+            'H&M': ['kadın', 'erkek'],
+            'Bershka': ['kadın', 'erkek']
         }
-        
-        # GÜNCELLENMİŞ GERÇEKÇİ FİYAT ARALIKLARI (TL)
+       
+        # SADECE 4 MARKA - GERÇEKÇİ FİYAT ARALIKLARI (TL)
         self.brand_price_ranges = {
-            'Zara': {'min': 99, 'max': 599, 'avg': 250},
-            'Pull & Bear': {'min': 79, 'max': 299, 'avg': 150},
-            'H&M': {'min': 49, 'max': 299, 'avg': 120},
-            'Trendyol': {'min': 39, 'max': 399, 'avg': 140},
-            'Koton': {'min': 39, 'max': 249, 'avg': 110},
-            'Stradivarius': {'min': 89, 'max': 399, 'avg': 180},
-            'Bershka': {'min': 69, 'max': 259, 'avg': 130},
-            'Mango': {'min': 159, 'max': 699, 'avg': 320},
-            'DeFacto': {'min': 29, 'max': 199, 'avg': 90},  # YENİ - UYGUN FİYAT
-            'LC Waikiki': {'min': 19, 'max': 149, 'avg': 70}  # YENİ - EN UYGUN
+            'Zara': {'min': 499, 'max': 2499, 'avg': 1499},
+            'Trendyol': {'min': 99, 'max': 1499, 'avg': 799},
+            'H&M': {'min': 499, 'max': 2499, 'avg': 1499},
+            'Bershka': {'min': 499, 'max': 2499, 'avg': 1499}
         }
         
         # DINAMIK ÖNERI SİSTEMİ
@@ -167,15 +155,15 @@ class ProductScraper:
         final_price = int(final_price * variation)
         
         # Güzel fiyat formatı
-        if brand in ['Zara', 'Mango']:
+        if brand in ['Zara']:
             return f"{final_price}.95 TL"
-        elif brand in ['H&M', 'Pull & Bear']:
+        elif brand in ['H&M', 'Bershka']:
             return f"{final_price}.99 TL"
         else:
             return f"{final_price}.90 TL"
 
     def _get_all_products_database(self):
-        """KAPSAMLI ürün veritabanı - TÜM MARKALAR"""
+        """SADECE 4 MARKA - KAPSAMLI ürün veritabanı"""
         return {
             'Zara': {
                 'kadın': {
@@ -212,42 +200,69 @@ class ProductScraper:
                     ]
                 }
             },
-            'Pull & Bear': {
+            'Trendyol': {
                 'kadın': {
                     'bel_vurgulu_elbise': [
-                        {'name': 'Kadın Bel Detaylı Elbise', 'price': '159.99 TL', 'image': 'https://dummyimage.com/300x400/ff6b6b/ffffff?text=Bel+Detayli', 'url': 'https://www.pullandbear.com/tr/kadin-n6417'}
+                        {'name': 'Kadın Bel Detaylı Elbise', 'price': '139.90 TL', 'image': 'https://dummyimage.com/300x400/ff6b6b/ffffff?text=Bel+Detayli', 'url': 'https://www.trendyol.com/sr?q=bel+detaylı+elbise'}
                     ],
                     'yuksek_bel_pantolon': [
-                        {'name': 'High Waist Mom Jean', 'price': '199.99 TL', 'image': 'https://dummyimage.com/300x400/4ecdc4/ffffff?text=High+Waist+Jean', 'url': 'https://www.pullandbear.com/tr/kadin/giyim/jean-n6581'}
+                        {'name': 'High Waist Mom Jean', 'price': '169.90 TL', 'image': 'https://dummyimage.com/300x400/4ecdc4/ffffff?text=High+Waist+Jean', 'url': 'https://www.trendyol.com/sr?q=yüksek+bel+pantolon'}
                     ],
                     'omuz_detayli': [
-                        {'name': 'Off-Shoulder Top', 'price': '89.99 TL', 'image': 'https://dummyimage.com/300x400/45b7d1/ffffff?text=Off+Shoulder', 'url': 'https://www.pullandbear.com/tr/kadin-n6417'}
+                        {'name': 'Off-Shoulder Top', 'price': '79.90 TL', 'image': 'https://dummyimage.com/300x400/45b7d1/ffffff?text=Off+Shoulder', 'url': 'https://www.trendyol.com/sr?q=omuz+detaylı+bluz'}
                     ],
                     'basic_tshirt': [
-                        {'name': 'Kadın Basic Tee', 'price': '69.99 TL', 'image': 'https://dummyimage.com/300x400/96ceb4/ffffff?text=Kadin+Basic', 'url': 'https://www.pullandbear.com/tr/kadin-n6417'}
+                        {'name': 'Kadın Basic Tee', 'price': '49.90 TL', 'image': 'https://dummyimage.com/300x400/96ceb4/ffffff?text=Kadin+Basic', 'url': 'https://www.trendyol.com/sr?q=kadın+basic+tişört'}
                     ]
                 },
                 'erkek': {
                     'regular_fit': [
-                        {'name': 'Regular Fit Hoodie', 'price': '149.99 TL', 'image': 'https://dummyimage.com/300x400/786fa6/ffffff?text=Regular+Hoodie', 'url': 'https://www.pullandbear.com/tr/erkek-n6228'}
+                        {'name': 'Regular Fit Hoodie', 'price': '119.90 TL', 'image': 'https://dummyimage.com/300x400/786fa6/ffffff?text=Regular+Hoodie', 'url': 'https://www.trendyol.com/sr?q=erkek+hoodie'}
                     ],
                     'basic_tshirt': [
-                        {'name': 'Erkek Basic Tişört', 'price': '79.99 TL', 'image': 'https://dummyimage.com/300x400/574b90/ffffff?text=Erkek+Basic', 'url': 'https://www.pullandbear.com/tr/erkek-n6228'}
+                        {'name': 'Erkek Basic Tişört', 'price': '59.90 TL', 'image': 'https://dummyimage.com/300x400/574b90/ffffff?text=Erkek+Basic', 'url': 'https://www.trendyol.com/sr?q=erkek+basic+tişört'}
                     ]
                 }
             },
-            'Stradivarius': {
+            'H&M': {
                 'kadın': {
-                    'fitted_elbise': [
-                        {'name': 'Bodycon Elbise', 'price': '179.95 TL', 'image': 'https://dummyimage.com/300x400/f8b500/ffffff?text=Bodycon', 'url': 'https://www.stradivarius.com/tr/kadin/giyim/elbise-n1995'},
-                        {'name': 'Fitted Mini Dress', 'price': '149.95 TL', 'image': 'https://dummyimage.com/300x400/f0932b/ffffff?text=Fitted+Mini', 'url': 'https://www.stradivarius.com/tr/kadin/giyim/elbise/mini-n1999'}
-                    ],
                     'bel_vurgulu_elbise': [
-                        {'name': 'Cinched Waist Dress', 'price': '199.95 TL', 'image': 'https://dummyimage.com/300x400/eb4d4b/ffffff?text=Cinched+Waist', 'url': 'https://www.stradivarius.com/tr/kadin/giyim/elbise-n1995'},
-                        {'name': 'Belted Midi Dress', 'price': '229.95 TL', 'image': 'https://dummyimage.com/300x400/6c5ce7/ffffff?text=Belted+Midi', 'url': 'https://www.stradivarius.com/tr/kadin/giyim/elbise-n1995'}
+                        {'name': 'Bel Detaylı Midi Elbise', 'price': '149.99 TL', 'image': 'https://dummyimage.com/300x400/e17055/ffffff?text=HM+Elbise', 'url': 'https://www2.hm.com/tr_tr/search-results.html?q=elbise'}
+                    ],
+                    'yuksek_bel_pantolon': [
+                        {'name': 'Wide High Jeans', 'price': '199.99 TL', 'image': 'https://dummyimage.com/300x400/00b894/ffffff?text=HM+Jean', 'url': 'https://www2.hm.com/tr_tr/search-results.html?q=yüksek+bel+jean'}
                     ],
                     'basic_tshirt': [
-                        {'name': 'Kadın Trendy Tee', 'price': '79.95 TL', 'image': 'https://dummyimage.com/300x400/74b9ff/ffffff?text=Trendy+Tee', 'url': 'https://www.stradivarius.com/tr/kadin-n1906'}
+                        {'name': 'Basic Cotton Tee', 'price': '79.99 TL', 'image': 'https://dummyimage.com/300x400/0984e3/ffffff?text=HM+Basic', 'url': 'https://www2.hm.com/tr_tr/search-results.html?q=basic+tişört'}
+                    ]
+                },
+                'erkek': {
+                    'regular_fit': [
+                        {'name': 'Regular Fit Tee', 'price': '89.99 TL', 'image': 'https://dummyimage.com/300x400/636e72/ffffff?text=HM+Erkek', 'url': 'https://www2.hm.com/tr_tr/search-results.html?q=erkek+tişört'}
+                    ],
+                    'basic_tshirt': [
+                        {'name': 'Cotton Basic Tee', 'price': '69.99 TL', 'image': 'https://dummyimage.com/300x400/2d3436/ffffff?text=HM+Basic', 'url': 'https://www2.hm.com/tr_tr/search-results.html?q=basic'}
+                    ]
+                }
+            },
+            'Bershka': {
+                'kadın': {
+                    'fitted_elbise': [
+                        {'name': 'Bodycon Elbise', 'price': '159.99 TL', 'image': 'https://dummyimage.com/300x400/ff7675/ffffff?text=Bershka+Bodycon', 'url': 'https://www.bershka.com/tr/search?searchTerm=bodycon+elbise'}
+                    ],
+                    'bel_vurgulu_elbise': [
+                        {'name': 'Cinched Waist Dress', 'price': '179.99 TL', 'image': 'https://dummyimage.com/300x400/74b9ff/ffffff?text=Bershka+Cinched', 'url': 'https://www.bershka.com/tr/search?searchTerm=bel+detaylı+elbise'}
+                    ],
+                    'basic_tshirt': [
+                        {'name': 'Trend Basic Tee', 'price': '79.99 TL', 'image': 'https://dummyimage.com/300x400/00cec9/ffffff?text=Bershka+Basic', 'url': 'https://www.bershka.com/tr/search?searchTerm=basic+tişört'}
+                    ]
+                },
+                'erkek': {
+                    'regular_fit': [
+                        {'name': 'Streetwear Hoodie', 'price': '199.99 TL', 'image': 'https://dummyimage.com/300x400/fdcb6e/ffffff?text=Bershka+Hoodie', 'url': 'https://www.bershka.com/tr/search?searchTerm=erkek+hoodie'}
+                    ],
+                    'basic_tshirt': [
+                        {'name': 'Urban Basic Tee', 'price': '89.99 TL', 'image': 'https://dummyimage.com/300x400/e84393/ffffff?text=Bershka+Basic', 'url': 'https://www.bershka.com/tr/search?searchTerm=erkek+basic'}
                     ]
                 }
             }
@@ -299,14 +314,14 @@ class ProductScraper:
         
         return final_products
 
-    # YENİ - WEB SCRAPING FONKSİYONLARI (ÇALIŞAN URL FORMATLARIYLA - DÜZELTİLMİŞ)
+    # WEB SCRAPING FONKSİYONLARI - SADECE 4 MARKA
     def search_real_products_web(self, search_query, gender="kadın", limit=6):
-        """İnternetten gerçek arama - ÇALIŞAN LİNKLER + MARKA UYUMLU"""
+        """İnternetten gerçek arama - SADECE 4 MARKA"""
         print(f"🔍 Web'de aranıyor: {search_query} ({gender})")
         
         all_products = []
         
-        # SADECE UYUMLU MARKALARI KULLAN
+        # SADECE 4 MARKADA UYUMLU OLANLARI KULLAN
         compatible_brands = []
         
         for brand, supported_genders in self.brand_gender_support.items():
@@ -315,18 +330,12 @@ class ProductScraper:
         
         print(f"📊 {gender} için uyumlu markalar: {compatible_brands}")
         
-        # GÜNCELLENMİŞ MARKA FONKSİYONLARI
+        # SADECE 4 MARKA FONKSİYONLARI
         brand_functions = {
             'Zara': self._search_zara_real,
-            'Pull & Bear': self._search_pullbear_real,
-            'H&M': self._search_hm_real,
             'Trendyol': self._search_trendyol_real,
-            'Koton': self._search_koton_real,
-            'Stradivarius': self._search_stradivarius_real,
-            'Bershka': self._search_bershka_real,
-            'Mango': self._search_mango_real,
-            'DeFacto': self._search_defacto_real,  # YENİ
-            'LC Waikiki': self._search_lcw_real   # YENİ
+            'H&M': self._search_hm_real,
+            'Bershka': self._search_bershka_real
         }
         
         for brand in compatible_brands[:limit]:
@@ -372,49 +381,6 @@ class ProductScraper:
             print(f"⚠️ Zara arama hatası: {e}")
             return []
 
-    def _search_pullbear_real(self, query, gender, limit=1):
-        """Pull&Bear - BASİT ARAMA FORMAT (DÜZELTİLMİŞ)"""
-        try:
-            # Pull&Bear'ın basit arama formatı
-            search_url = f"https://www.pullandbear.com/tr/search?searchTerm={quote(query)}"
-            
-            product = {
-                'name': f'{query.title()} - Pull&Bear ({gender.title()})',
-                'price': self._get_realistic_price('Pull & Bear', query),
-                'url': search_url,
-                'image': f'https://dummyimage.com/300x400/{random.choice(["4ecdc4", "45b7d1", "96ceb4"])}/ffffff?text=PB+{gender.title()}+{query.replace(" ", "+")}',
-                'brand': 'Pull & Bear',
-                'match_score': random.randint(85, 95)
-            }
-            
-            print(f"✅ Pull&Bear ({gender}): {search_url}")
-            return [product]
-            
-        except Exception as e:
-            print(f"⚠️ Pull&Bear arama hatası: {e}")
-            return []
-
-    def _search_hm_real(self, query, gender, limit=1):
-        """H&M - ÇALIŞAN FORMAT + GERÇEKÇİ FİYAT"""
-        try:
-            search_url = f"https://www2.hm.com/tr_tr/search-results.html?q={quote(query)}"
-            
-            product = {
-                'name': f'{query.title()} - H&M ({gender.title()})',
-                'price': self._get_realistic_price('H&M', query),
-                'url': search_url,
-                'image': f'https://dummyimage.com/300x400/{random.choice(["e17055", "00b894", "0984e3"])}/ffffff?text=HM+{gender.title()}+{query.replace(" ", "+")}',
-                'brand': 'H&M',
-                'match_score': random.randint(82, 94)
-            }
-            
-            print(f"✅ H&M ({gender}): {search_url}")
-            return [product]
-            
-        except Exception as e:
-            print(f"⚠️ H&M arama hatası: {e}")
-            return []
-
     def _search_trendyol_real(self, query, gender, limit=1):
         """Trendyol - CİNSİYET DUYARLI + GERÇEKÇİ FİYAT"""
         try:
@@ -438,56 +404,29 @@ class ProductScraper:
             print(f"⚠️ Trendyol arama hatası: {e}")
             return []
 
-    def _search_koton_real(self, query, gender, limit=1):
-        """Koton - BASİT ARAMA FORMAT (DÜZELTİLMİŞ)"""
+    def _search_hm_real(self, query, gender, limit=1):
+        """H&M - ÇALIŞAN FORMAT + GERÇEKÇİ FİYAT"""
         try:
-            # Koton'un basit arama formatı
-            search_url = f"https://www.koton.com/tr/arama?q={quote(query)}"
+            search_url = f"https://www2.hm.com/tr_tr/search-results.html?q={quote(query)}"
             
             product = {
-                'name': f'{query.title()} - Koton ({gender.title()})',
-                'price': self._get_realistic_price('Koton', query),
+                'name': f'{query.title()} - H&M ({gender.title()})',
+                'price': self._get_realistic_price('H&M', query),
                 'url': search_url,
-                'image': f'https://dummyimage.com/300x400/{random.choice(["00cec9", "55efc4", "fd79a8"])}/ffffff?text=Koton+{gender.title()}+{query.replace(" ", "+")}',
-                'brand': 'Koton',
-                'match_score': random.randint(80, 92)
+                'image': f'https://dummyimage.com/300x400/{random.choice(["e17055", "00b894", "0984e3"])}/ffffff?text=HM+{gender.title()}+{query.replace(" ", "+")}',
+                'brand': 'H&M',
+                'match_score': random.randint(82, 94)
             }
             
-            print(f"✅ Koton ({gender}): {search_url}")
+            print(f"✅ H&M ({gender}): {search_url}")
             return [product]
             
         except Exception as e:
-            print(f"⚠️ Koton arama hatası: {e}")
-            return []
-
-    def _search_stradivarius_real(self, query, gender, limit=1):
-        """Stradivarius - SADECE KADIN + ÇALIŞAN FORMAT"""
-        try:
-            if gender != 'kadın':
-                print(f"⚠️ Stradivarius sadece kadın ürünleri satıyor, {gender} için atlanıyor")
-                return []
-            
-            # Stradivarius'un basit arama formatı
-            search_url = f"https://www.stradivarius.com/tr/search?searchTerm={quote(query)}"
-            
-            product = {
-                'name': f'{query.title()} - Stradivarius',
-                'price': self._get_realistic_price('Stradivarius', query),
-                'url': search_url,
-                'image': f'https://dummyimage.com/300x400/{random.choice(["6c5ce7", "a29bfe", "fd79a8"])}/ffffff?text=Strd+{query.replace(" ", "+")}',
-                'brand': 'Stradivarius',
-                'match_score': random.randint(86, 96)
-            }
-            
-            print(f"✅ Stradivarius (sadece kadın): {search_url}")
-            return [product]
-            
-        except Exception as e:
-            print(f"⚠️ Stradivarius arama hatası: {e}")
+            print(f"⚠️ H&M arama hatası: {e}")
             return []
 
     def _search_bershka_real(self, query, gender, limit=1):
-        """Bershka - DÜZELTILMIŞ CİNSİYET KONTROLÜ"""
+        """Bershka - ÇALIŞAN FORMAT"""
         try:
             # Bershka'nın basit arama formatı
             search_url = f"https://www.bershka.com/tr/search?searchTerm={quote(query)}"
@@ -508,78 +447,8 @@ class ProductScraper:
             print(f"⚠️ Bershka arama hatası: {e}")
             return []
 
-    def _search_mango_real(self, query, gender, limit=1):
-        """Mango - SADECE KADIN + ÇALIŞAN FORMAT"""
-        try:
-            if gender != 'kadın':
-                print(f"⚠️ Mango sadece kadın ürünleri satıyor, {gender} için atlanıyor")
-                return []
-            
-            # Mango'nun basit arama formatı
-            search_url = f"https://shop.mango.com/tr/search?q={quote(query)}"
-            
-            product = {
-                'name': f'{query.title()} - Mango',
-                'price': self._get_realistic_price('Mango', query),
-                'url': search_url,
-                'image': f'https://dummyimage.com/300x400/{random.choice(["fdcb6e", "e84393", "6c5ce7"])}/ffffff?text=Mango+{query.replace(" ", "+")}',
-                'brand': 'Mango',
-                'match_score': random.randint(87, 97)
-            }
-            
-            print(f"✅ Mango (sadece kadın): {search_url}")
-            return [product]
-            
-        except Exception as e:
-            print(f"⚠️ Mango arama hatası: {e}")
-            return []
-
-    def _search_defacto_real(self, query, gender, limit=1):
-        """DeFacto - YENİ MARKA + ÇALIŞAN FORMAT"""
-        try:
-            # DeFacto'nun kategori bazlı arama
-            search_url = f"https://www.defacto.com.tr/search?q={quote(query)}"
-            
-            product = {
-                'name': f'{query.title()} - DeFacto ({gender.title()})',
-                'price': self._get_realistic_price('DeFacto', query),
-                'url': search_url,
-                'image': f'https://dummyimage.com/300x400/{random.choice(["2d3436", "00b894", "0984e3"])}/ffffff?text=DeFacto+{gender.title()}+{query.replace(" ", "+")}',
-                'brand': 'DeFacto',
-                'match_score': random.randint(82, 92)
-            }
-            
-            print(f"✅ DeFacto ({gender}): {search_url}")
-            return [product]
-            
-        except Exception as e:
-            print(f"⚠️ DeFacto arama hatası: {e}")
-            return []
-
-    def _search_lcw_real(self, query, gender, limit=1):
-        """LC Waikiki - YENİ MARKA + ÇALIŞAN FORMAT"""
-        try:
-            # LC Waikiki'nin arama formatı
-            search_url = f"https://www.lcwaikiki.com/tr-TR/TR/search?q={quote(query)}"
-            
-            product = {
-                'name': f'{query.title()} - LC Waikiki ({gender.title()})',
-                'price': self._get_realistic_price('LC Waikiki', query),
-                'url': search_url,
-                'image': f'https://dummyimage.com/300x400/{random.choice(["e74c3c", "3498db", "f39c12"])}/ffffff?text=LCW+{gender.title()}+{query.replace(" ", "+")}',
-                'brand': 'LC Waikiki',
-                'match_score': random.randint(78, 88)
-            }
-            
-            print(f"✅ LC Waikiki ({gender}): {search_url}")
-            return [product]
-            
-        except Exception as e:
-            print(f"⚠️ LC Waikiki arama hatası: {e}")
-            return []
-
     def _get_fallback_products(self, query, gender, limit):
-        """Fallback ürünler - ÇALIŞAN URL FORMATLARIYLA"""
+        """Fallback ürünler - SADECE 4 MARKA"""
         products = []
         
         # Sadece cinsiyet uyumlu markaları kullan
@@ -588,7 +457,7 @@ class ProductScraper:
             if gender in supported_genders:
                 compatible_brands.append(brand)
         
-        # ÇALIŞAN URL FORMATLARI
+        # SADECE 4 MARKA - ÇALIŞAN URL FORMATLARI
         brands_data = {
             'Zara': {
                 'url_template': f'https://www.zara.com/tr/tr/search?searchTerm={{}}&section={"MAN" if gender == "erkek" else "WOMAN"}',
@@ -602,9 +471,9 @@ class ProductScraper:
                 'url_template': f'https://www.trendyol.com/sr?q={{}} {gender}',
                 'colors': ['ff6b6b', 'feca57', '48dbfb']
             },
-            'DeFacto': {
-                'url_template': 'https://www.defacto.com.tr/search?q={}',
-                'colors': ['2d3436', '00b894', '0984e3']
+            'Bershka': {
+                'url_template': 'https://www.bershka.com/tr/search?searchTerm={}',
+                'colors': ['ff7675', '74b9ff', '00cec9']
             }
         }
         
@@ -628,6 +497,12 @@ class ProductScraper:
     def get_products_by_brand(self, brand, category="woman", body_type="Rectangle", analysis_text="", limit=6):
         """ANA METOD - Her çağrıda farklı ürünler!"""
         
+        # SADECE 4 MARKA KONTROLÜ
+        allowed_brands = ['Zara', 'Trendyol', 'H&M', 'Bershka']
+        if brand not in allowed_brands:
+            print(f"❌ {brand} desteklenmiyor. Sadece şu markalar var: {allowed_brands}")
+            return []
+        
         if analysis_text and len(analysis_text) > 10:
             return self.get_dynamic_products_by_analysis(brand, analysis_text, limit)
         else:
@@ -638,17 +513,33 @@ class ProductScraper:
 if __name__ == "__main__":
     scraper = ProductScraper()
     
-    # Test - erkek için
-    print("=== ERKEK TEST ===")
-    products = scraper.search_real_products_web("gömlek", "erkek", limit=5)
+    # Test - erkek için SADECE 4 MARKA
+    print("=== ERKEK TEST - SADECE 4 MARKA ===")
+    products = scraper.search_real_products_web("gömlek", "erkek", limit=4)
     print(f"Erkek için bulunan marka sayısı: {len(products)}")
     for product in products:
         print(f"- {product['brand']}: {product['name']} - {product['price']}")
         print(f"  URL: {product['url']}")
     
-    print("\n=== KADIN TEST ===")
-    products = scraper.search_real_products_web("elbise", "kadın", limit=5)
+    print("\n=== KADIN TEST - SADECE 4 MARKA ===")
+    products = scraper.search_real_products_web("elbise", "kadın", limit=4)
     print(f"Kadın için bulunan marka sayısı: {len(products)}")
     for product in products:
         print(f"- {product['brand']}: {product['name']} - {product['price']}")
         print(f"  URL: {product['url']}")
+    
+    print(f"\n=== MEVCUT MARKALAR ===")
+    scraper_instance = ProductScraper()
+    print("Desteklenen markalar:", list(scraper_instance.brand_gender_support.keys()))
+    print("Toplam marka sayısı:", len(scraper_instance.brand_gender_support))
+    
+    # Marka test
+    print("\n=== MARKA TEST ===")
+    for brand in ['Zara', 'Trendyol', 'H&M', 'Bershka']:
+        products = scraper_instance.get_products_by_brand(brand, analysis_text="kadın Rectangle", limit=3)
+        print(f"{brand}: {len(products)} ürün bulundu")
+    
+    # Desteklenmeyen marka test
+    print("\n=== DESTEKLENMEYEN MARKA TEST ===")
+    unsupported_products = scraper_instance.get_products_by_brand("Mango", analysis_text="kadın Rectangle", limit=3)
+    print(f"Mango (desteklenmiyor): {len(unsupported_products)} ürün bulundu")

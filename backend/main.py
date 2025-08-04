@@ -405,11 +405,23 @@ async def analyze_photo(file: UploadFile = File(...)):
 
 @app.post("/get-products")
 def get_products(request: ProductRequest):
-    """Dinamik ürün önerileri"""
+    """Dinamik ürün önerileri - SADECE 4 MARKA"""
     try:
         print(f"\n🛍️ === {request.brand} İSTEĞİ ===")
         print(f"Body type: {request.body_type}")
         print(f"Category: {request.category}")
+        
+        # SADECE 4 MARKA KONTROLÜ
+        allowed_brands = ['Zara', 'Trendyol', 'H&M', 'Bershka']
+        if request.brand not in allowed_brands:
+            print(f"❌ {request.brand} desteklenmiyor. Sadece şu markalar var: {allowed_brands}")
+            return {
+                "success": False,
+                "products": [],
+                "ai_recommendation": f"{request.brand} şu anda desteklenmiyor. Mevcut markalar: {', '.join(allowed_brands)}",
+                "brand": request.brand,
+                "product_count": 0
+            }
         
         # TREND TRACKING EKLE
         track_product_search(
@@ -448,7 +460,8 @@ def get_products(request: ProductRequest):
             "ai_recommendation": recommendation,
             "brand": request.brand,
             "product_count": len(products),
-            "is_dynamic": True
+            "is_dynamic": True,
+            "available_brands": allowed_brands
         }
         
     except Exception as e:
@@ -466,7 +479,7 @@ def get_products(request: ProductRequest):
 # YENİ: Trend Analizi Endpoint
 @app.post("/get-trends")
 def get_trends(request: TrendRequest):
-    """Trend analizi endpoint'i"""
+    """Trend analizi endpoint'i - SADECE 4 MARKA"""
     try:
         # Bu haftanın trendlerini getir
         weekly_trends = get_weekly_trends(
@@ -475,7 +488,7 @@ def get_trends(request: TrendRequest):
             limit=8
         )
         
-        # Eğer gerçek veri yoksa mock data döndür (başlangıç için)
+        # Eğer gerçek veri yoksa mock data döndür - SADECE 4 MARKA
         if not weekly_trends:
             mock_trends = [
                 {
@@ -488,35 +501,35 @@ def get_trends(request: TrendRequest):
                 },
                 {
                     "product_name": "Wide Leg Jean",
-                    "brand": "Pull & Bear", 
+                    "brand": "Trendyol", 
                     "category": "pantolon",
                     "search_count": 38,
                     "trend_score": 76,
-                    "price_range": "199-299 TL"
+                    "price_range": "139-199 TL"
                 },
                 {
-                    "product_name": "Crop Hoodie",
-                    "brand": "Stradivarius",
-                    "category": "hoodie", 
+                    "product_name": "Basic Cotton Tee",
+                    "brand": "H&M",
+                    "category": "tişört", 
                     "search_count": 32,
                     "trend_score": 68,
-                    "price_range": "149-229 TL"
+                    "price_range": "79-149 TL"
                 },
                 {
-                    "product_name": "Mom Jean",
-                    "brand": "Zara",
-                    "category": "pantolon",
+                    "product_name": "Streetwear Hoodie",
+                    "brand": "Bershka",
+                    "category": "hoodie",
                     "search_count": 29,
                     "trend_score": 65,
-                    "price_range": "259-399 TL"
+                    "price_range": "159-229 TL"
                 },
                 {
-                    "product_name": "Blazer Ceket",
-                    "brand": "Mango",
-                    "category": "ceket",
+                    "product_name": "High Waist Jean",
+                    "brand": "Zara",
+                    "category": "pantolon",
                     "search_count": 24,
                     "trend_score": 58,
-                    "price_range": "499-799 TL"
+                    "price_range": "259-399 TL"
                 }
             ]
             weekly_trends = mock_trends
@@ -525,7 +538,7 @@ def get_trends(request: TrendRequest):
         if GEMINI_AVAILABLE:
             try:
                 insights_prompt = f"""
-                Bu hafta en çok aranan ürünler:
+                Bu hafta en çok aranan ürünler (Sadece Zara, Trendyol, H&M, Bershka):
                 {json.dumps(weekly_trends, ensure_ascii=False, indent=2)}
                 
                 Bu trend verilerine dayanarak:
@@ -549,7 +562,8 @@ def get_trends(request: TrendRequest):
             "trends": weekly_trends,
             "insights": trend_insights,
             "week_number": datetime.now().isocalendar()[1],
-            "total_products": len(weekly_trends)
+            "total_products": len(weekly_trends),
+            "supported_brands": ["Zara", "Trendyol", "H&M", "Bershka"]
         }
         
     except Exception as e:
@@ -563,7 +577,7 @@ def get_trends(request: TrendRequest):
 
 @app.post("/chat-product-search")
 def chat_product_search(request: ChatRequest):
-    """GELIŞMIŞ AI STİL DANIŞMANI - Trend + Kişisel Analiz"""
+    """GELIŞMIŞ AI STİL DANIŞMANI - Trend + Kişisel Analiz - SADECE 4 MARKA"""
     try:
         print(f"🤖 AI Stil Danışmanı isteği: {request.message}")
         
@@ -610,7 +624,7 @@ Sen AURA AI Stil Danışmanısın. Kullanıcının mesajını analiz et: "{reque
 Conversation history:
 {chr(10).join([f"{msg['role']}: {msg['content']}" for msg in conversation["messages"][-5:]])}
 
-Güncel trend verileri:
+Güncel trend verileri (Sadece Zara, Trendyol, H&M, Bershka):
 {json.dumps(current_trends[:5], ensure_ascii=False) if current_trends else "Henüz trend verisi yok"}
 
 Şunları belirle ve JSON formatında döndür:
@@ -673,7 +687,7 @@ KULLANICI PROFİLİ:
 - Bütçe: {conversation.get('budget_range', 'belirtilmedi')}
 - Son İstek: {request.message}
 
-GÜNCEL TRENDLER (Bu hafta):
+GÜNCEL TRENDLER (Bu hafta - Sadece Zara, Trendyol, H&M, Bershka):
 {chr(10).join([f"• {t['product_name']} ({t['brand']}) - %{t['trend_score']} trend" for t in current_trends[:3]]) if current_trends else "Trend verileri yükleniyor"}
 
 KULLANICI SORGUSU ANALİZİ:
@@ -687,7 +701,7 @@ GÖREVİN:
 1. Kullanıcının isteğini anlayıp onaylama
 2. Vücut tipine uygun önerilerde bulunma
 3. Güncel trendleri dahil etme
-4. Spesifik marka/renk/stil önerileri
+4. Spesifik marka/renk/stil önerileri (Sadece Zara, Trendyol, H&M, Bershka)
 5. Bütçeye uygun seçenekler sunma
 6. Kısa ama değerli tavsiyeler verme
 
@@ -724,14 +738,14 @@ Türkçe cevap ver:
                     
                     ai_message = f"""🎯 {conversation['detected_gender'].title()} stilinde {analysis_data.get('product_type', 'ürün')} önerisi hazırlıyorum! 
                     
-{trend_text} {budget_text} uygun seçenekleri internetten bulup size sunacağım. 
+{trend_text} {budget_text} uygun seçenekleri Zara, Trendyol, H&M ve Bershka'dan bulup size sunacağım. 
 
 Hem trendleri hem de {conversation.get('body_type', 'vücut tipinizi')} dikkate alarak en uygun kombinleri öneriyorum! ✨"""
                 else:
                     ai_message = f"🤖 {conversation['detected_gender'].title()} için {analysis_data.get('product_type', 'ürün')} önerisi hazırlıyorum!"
         else:
             # Gemini mevcut değilse basit cevap
-            ai_message = "🤖 Stil danışmanınız olarak size en uygun ürünleri buluyorum!"
+            ai_message = "🤖 Stil danışmanınız olarak size Zara, Trendyol, H&M ve Bershka'dan en uygun ürünleri buluyorum!"
             analysis_data = {
                 "gender": "kadın",
                 "product_type": "kıyafet",
@@ -739,13 +753,13 @@ Hem trendleri hem de {conversation.get('body_type', 'vücut tipinizi')} dikkate 
             }
             conversation["detected_gender"] = "kadın"
         
-        # ADIM 3: AKILLI ÜRÜN ARAMA
+        # ADIM 3: AKILLI ÜRÜN ARAMA - SADECE 4 MARKA
         search_query = analysis_data.get("search_keywords", request.message)
         gender = conversation.get("detected_gender", "kadın")
         
-        print(f"🔍 AI Stil Araması: {search_query}")
+        print(f"🔍 AI Stil Araması (Sadece 4 marka): {search_query}")
         
-        # Gelişmiş ürün arama (trend + kişisel tercihler)
+        # Gelişmiş ürün arama (trend + kişisel tercihler) - SADECE 4 MARKA
         all_products = scraper.search_real_products_web(
             search_query=search_query,
             gender=gender, 
@@ -755,7 +769,7 @@ Hem trendleri hem de {conversation.get('body_type', 'vücut tipinizi')} dikkate 
         # Ürünleri conversation'a kaydet
         conversation["searched_products"].extend(all_products)
         
-        print(f"🛍️ AI Stil Danışmanı {len(all_products)} ürün önerisi buldu")
+        print(f"🛍️ AI Stil Danışmanı {len(all_products)} ürün önerisi buldu (4 markadan)")
         
         return {
             "ai_response": ai_message,
@@ -770,7 +784,8 @@ Hem trendleri hem de {conversation.get('body_type', 'vücut tipinizi')} dikkate 
             },
             "current_trends": current_trends[:3] if current_trends else [],
             "search_query": search_query,
-            "ai_type": "style_consultant"
+            "ai_type": "style_consultant",
+            "supported_brands": ["Zara", "Trendyol", "H&M", "Bershka"]
         }
         
     except Exception as e:
@@ -786,7 +801,27 @@ Hem trendleri hem de {conversation.get('body_type', 'vücut tipinizi')} dikkate 
 
 @app.get("/")
 def read_root():
-    return {"message": "AURA AI Backend - Trend Analizi ile Güçlendirildi! 🎯📈", "status": "running"}
+    return {
+        "message": "AURA AI Backend - 4 Marka ile Güçlendirildi! 🎯📈", 
+        "status": "running",
+        "supported_brands": ["Zara", "Trendyol", "H&M", "Bershka"],
+        "total_brands": 4
+    }
+
+@app.get("/brands")
+def get_supported_brands():
+    """Desteklenen markaları döndür"""
+    return {
+        "success": True,
+        "brands": ["Zara", "Trendyol", "H&M", "Bershka"],
+        "total": 4,
+        "gender_support": {
+            "Zara": ["kadın", "erkek"],
+            "Trendyol": ["kadın", "erkek"], 
+            "H&M": ["kadın", "erkek"],
+            "Bershka": ["kadın", "erkek"]
+        }
+    }
 
 if __name__ == "__main__":
     import uvicorn

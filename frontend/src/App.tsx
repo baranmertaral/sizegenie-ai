@@ -81,7 +81,9 @@ function App() {
   const brandInputRef = useRef<HTMLInputElement>(null);
   const productInputRef = useRef<HTMLInputElement>(null);
   const chatInputRef = useRef<HTMLInputElement>(null);
-
+  const heightInputRef = useRef<HTMLInputElement>(null);
+  const weightInputRef = useRef<HTMLInputElement>(null);
+ 
   // Trend analysis states
   const [trendData, setTrendData] = useState<any>(null);
   const [trendLoading, setTrendLoading] = useState(false);
@@ -169,7 +171,7 @@ ${baseUrl}`;
         });
         setShareModalOpen(false);
       } catch (error) {
-        console.log('Native share failed:', error);
+       console.log('Native share failed:', error);
         // Fallback to clipboard
         handleCopyToClipboard();
       }
@@ -230,105 +232,135 @@ ${baseUrl}`;
   // Analysis history state
   const [analysisHistory, setAnalysisHistory] = useState<any[]>([]);
 
-  const brands = ['Zara', 'Pull & Bear', 'Stradivarius'];
+  const brands = ['Zara', 'Trendyol', 'H&M', 'Bershka'];
 
   // GERÇEK BEDEN KARŞILAŞTIRMA VERİSİ (Araştırma Bazlı)
-  const sizeChart = {
-    kadın: {
-      XS: { 
-        Zara: "XS", 
-        "Pull & Bear": "XXS", 
-        Stradivarius: "XS", 
-        "H&M": "32", 
-        Mango: "XS",
-        "Genel": "XS denk"
-      },
-      S: { 
-        Zara: "S", 
-        "Pull & Bear": "XS", 
-        Stradivarius: "S", 
-        "H&M": "34/36", 
-        Mango: "S",
-        "Genel": "S denk"
-      },
-      M: { 
-        Zara: "M", 
-        "Pull & Bear": "S", 
-        Stradivarius: "M", 
-        "H&M": "38", 
-        Mango: "M",
-        "Genel": "M denk"
-      },
-      L: { 
-        Zara: "L", 
-        "Pull & Bear": "M", 
-        Stradivarius: "L", 
-        "H&M": "40", 
-        Mango: "L",
-        "Genel": "L denk"
-      },
-      XL: { 
-        Zara: "XL", 
-        "Pull & Bear": "L", 
-        Stradivarius: "XL", 
-        "H&M": "42", 
-        Mango: "XL",
-        "Genel": "XL denk"
-      },
-      XXL: { 
-        Zara: "XXL", 
-        "Pull & Bear": "XL", 
-        Stradivarius: "XXL", 
-        "H&M": "44", 
-        Mango: "XXL",
-        "Genel": "XXL denk"
-      }
+const sizeChart = {
+  kadın: {
+    XS: { 
+      Zara: "XS", 
+      Trendyol: "XXS",  
+      "H&M": "32", 
+      Bershka: "XS",
+      "Pull & Bear": "XXS",
+      Stradivarius: "XS",
+      Mango: "XS",
+      "Genel": "XS denk"
     },
-    erkek: {
-      XS: { 
-        Zara: "XS", 
-        "Pull & Bear": "XS", 
-        "H&M": "44", 
-        Mango: "XS",
-        "Genel": "XS denk"
-      },
-      S: { 
-        Zara: "S", 
-        "Pull & Bear": "XS", 
-        "H&M": "46", 
-        Mango: "S",
-        "Genel": "S denk"
-      },
-      M: { 
-        Zara: "M", 
-        "Pull & Bear": "S", 
-        "H&M": "48", 
-        Mango: "M",
-        "Genel": "M denk"
-      },
-      L: { 
-        Zara: "L", 
-        "Pull & Bear": "M", 
-        "H&M": "50", 
-        Mango: "L",
-        "Genel": "L denk"
-      },
-      XL: { 
-        Zara: "XL", 
-        "Pull & Bear": "L", 
-        "H&M": "52", 
-        Mango: "XL",
-        "Genel": "XL denk"
-      },
-      XXL: { 
-        Zara: "XXL", 
-        "Pull & Bear": "XL", 
-        "H&M": "54", 
-        Mango: "XXL",
-        "Genel": "XXL denk"
-      }
+    S: { 
+      Zara: "S", 
+      Trendyol: "XS",  
+      "H&M": "34/36", 
+      Bershka: "S",
+      "Pull & Bear": "XS",
+      Stradivarius: "S",
+      Mango: "S",
+      "Genel": "S denk"
+    },
+    M: { 
+      Zara: "M", 
+      Trendyol: "S",  
+      "H&M": "38", 
+      Bershka: "M",
+      "Pull & Bear": "S",
+      Stradivarius: "M",
+      Mango: "M",
+      "Genel": "M denk"
+    },
+    L: { 
+      Zara: "L", 
+      Trendyol: "M",  
+      "H&M": "40", 
+      Bershka: "L",
+      "Pull & Bear": "M",
+      Stradivarius: "L",
+      Mango: "L",
+      "Genel": "L denk"
+    },
+    XL: { 
+      Zara: "XL", 
+      Trendyol: "L",  
+      "H&M": "42", 
+      Bershka: "XL",
+      "Pull & Bear": "L",
+      Stradivarius: "XL",
+      Mango: "XL",
+      "Genel": "XL denk"
+    },
+    XXL: { 
+      Zara: "XXL", 
+      Trendyol: "XL",  
+      "H&M": "44", 
+      Bershka: "XXL",
+      "Pull & Bear": "XL",
+      Stradivarius: "XXL",
+      Mango: "XXL",
+      "Genel": "XXL denk"
     }
-  };
+  },
+  erkek: {
+    XS: { 
+      Zara: "XS", 
+      Trendyol: "XS", 
+      "H&M": "44", 
+      Bershka: "XS",
+      "Pull & Bear": "XS",
+      Stradivarius: "N/A", // Erkek koleksiyonu yok
+      Mango: "XS",
+      "Genel": "XS denk"
+    },
+    S: { 
+      Zara: "S", 
+      Trendyol: "XS", 
+      "H&M": "46", 
+      Bershka: "S",
+      "Pull & Bear": "XS",
+      Stradivarius: "N/A",
+      Mango: "S",
+      "Genel": "S denk"
+    },
+    M: { 
+      Zara: "M", 
+      Trendyol: "S", 
+      "H&M": "48", 
+      Bershka: "M",
+      "Pull & Bear": "S",
+      Stradivarius: "N/A",
+      Mango: "M",
+      "Genel": "M denk"
+    },
+    L: { 
+      Zara: "L", 
+      Trendyol: "M", 
+      "H&M": "50", 
+      Bershka: "L",
+      "Pull & Bear": "M",
+      Stradivarius: "N/A",
+      Mango: "L",
+      "Genel": "L denk"
+    },
+    XL: { 
+      Zara: "XL", 
+      Trendyol: "L", 
+      "H&M": "52", 
+      Bershka: "XL",
+      "Pull & Bear": "L",
+      Stradivarius: "N/A",
+      Mango: "XL",
+      "Genel": "XL denk"
+    },
+    XXL: { 
+      Zara: "XXL", 
+      Trendyol: "XL", 
+      "H&M": "54", 
+      Bershka: "XXL",
+      "Pull & Bear": "XL",
+      Stradivarius: "N/A",
+      Mango: "XXL",
+      "Genel": "XXL denk"
+    }
+  }
+};
 
   // Analiz geçmişine ekleme fonksiyonu
   const addToHistory = (type: string, data: any) => {
@@ -420,8 +452,8 @@ ${baseUrl}`;
     setResult(null);
     
     const formData = {
-      user_height: userHeight,
-      user_weight: userWeight,
+      user_height: Number(heightInputRef.current?.value) || 175,
+      user_weight: Number(weightInputRef.current?.value) || 70,
       product_name: productInputRef.current?.value || '',
       product_size: productSize,
       brand: brandInputRef.current?.value || '',
@@ -891,7 +923,7 @@ ${baseUrl}`;
       
       <div className="photo-section">
         <p>Vücut tipinizi analiz etmek için fotoğrafınızı yükleyin</p>
-        <input
+          ref={weightInputRef}<input
           type="file"
           accept="image/*"
           onChange={handlePhotoUpload}
@@ -1005,31 +1037,46 @@ ${baseUrl}`;
         </div>
 
         <div className="form-group">
-          <label>Boy (cm):</label>
-          <input
-            type="number"
-            value={userHeight}
-            onChange={(e) => setUserHeight(Number(e.target.value))}
+	  <label>Boy (cm):</label>
+ 	  <input
+   	    type="number"
+   	    defaultValue={175}
+   	    min="100"
+   	    max="250"
+            onKeyPress={(e) => {
+	      if (!/[0-9]/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete' && e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') {
+		e.preventDefault();
+	      }
+            }}
+ 	  />
+	</div>
+
+	<div className="form-group">
+ 	 <label>Kilo (kg):</label>
+ 	 <input
+   	   type="number"
+   	   defaultValue={70}
+   	   min="30"
+   	   max="200"
+	   onKeyPress={(e) => {
+	     if (!/[0-9]/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete' && e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') {
+	       e.preventDefault();
+	     }
+           }}
           />
-        </div>
-        
-        <div className="form-group">
-          <label>Kilo (kg):</label>
-          <input
-            type="number"
-            value={userWeight}
-            onChange={(e) => setUserWeight(Number(e.target.value))}
-          />
-        </div>
-        
+	</div>
+                  
         <div className="form-group">
           <label>Marka:</label>
           <input
             ref={brandInputRef}
             type="text"
-            placeholder="örn: Zara, H&M, Nike"
+            placeholder="Zara, Trendyol, H&M veya Bershka"
             autoComplete="off"
           />
+          <small style={{color: 'var(--text-tertiary)', fontSize: '0.8rem', marginTop: '0.25rem', display: 'block'}}>
+            💡 Desteklenen markalar: Zara, Trendyol, H&M, Bershka
+          </small>
         </div>
         
         <div className="form-group">
@@ -1037,7 +1084,7 @@ ${baseUrl}`;
           <input
             ref={productInputRef}
             type="text"
-            placeholder="örn: Basic T-Shirt, Jeans"
+            placeholder="örn: Basic T-Shirt, Jeans, Hoodie"
             autoComplete="off"
           />
         </div>

@@ -208,6 +208,14 @@ body {
   margin-bottom: 2rem;
 }
 
+.trend-subtitle {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  font-style: italic;
+}
+
 .trend-loading {
   text-align: center;
   padding: 2rem;
@@ -1396,13 +1404,18 @@ button[type="submit"]:disabled {
   margin-left: 0.5rem;
 }
 
-.brand-btn[data-brand="Pull & Bear"]::after {
-  content: "🐻";
+.brand-btn[data-brand="Trendyol"]::after {
+  content: "🛒";
   margin-left: 0.5rem;
 }
 
-.brand-btn[data-brand="Stradivarius"]::after {
-  content: "🎵";
+.brand-btn[data-brand="H&M"]::after {
+  content: "🏠";
+  margin-left: 0.5rem;
+}
+
+.brand-btn[data-brand="Bershka"]::after {
+  content: "👕";
   margin-left: 0.5rem;
 }
 
@@ -1594,15 +1607,9 @@ button[type="submit"]:disabled {
   font-weight: 600;
 }
 
-.brand-pb {
-  background: rgba(46, 204, 113, 0.05);
-  color: #2ECC71 !important;
-  font-weight: 600;
-}
-
-.brand-str {
-  background: rgba(155, 89, 182, 0.05);
-  color: #9B59B6 !important;
+.brand-trendyol {
+  background: rgba(255, 107, 107, 0.05);
+  color: #ff6b6b !important;
   font-weight: 600;
 }
 
@@ -1612,9 +1619,9 @@ button[type="submit"]:disabled {
   font-weight: 600;
 }
 
-.brand-mango {
-  background: rgba(230, 126, 34, 0.05);
-  color: #E67E22 !important;
+.brand-bershka {
+  background: rgba(116, 185, 255, 0.05);
+  color: #74b9ff !important;
   font-weight: 600;
 }
 
