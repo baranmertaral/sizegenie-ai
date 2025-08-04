@@ -1,6 +1,11 @@
 import React, { useState, useRef } from 'react';
 import './App.css';
 
+const BASE_URL = process.env.NODE_ENV === 'production'
+  ? 'https://aura-ai-rho.vercel.app/api'
+  : 'http://localhost:8000';
+
+
 interface SizeRequest {
   user_height: number;
   user_weight: number;
@@ -46,10 +51,12 @@ function App() {
   const [photoLoading, setPhotoLoading] = useState(false);
   const [productsLoading, setProductsLoading] = useState(false);
 
-  // Chat states
+  // Chat states - YENİ CİNSİYET DESTEĞİ İLE
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [chatLoading, setChatLoading] = useState(false);
   const [conversationId, setConversationId] = useState<string>('');
+  const [chatGender, setChatGender] = useState<string>(''); // ✅ YENİ: Chat cinsiyet
+  const [showGenderSelection, setShowGenderSelection] = useState<boolean>(true); // ✅ YENİ: Cinsiyet seçim ekranı
 
   // Dinamik AI düşünme mesajları
   const [thinkingMessage, setThinkingMessage] = useState<string>('');
@@ -91,143 +98,6 @@ function App() {
   // Sosyal paylaşım states
   const [shareModalOpen, setShareModalOpen] = useState(false);
   const [shareContent, setShareContent] = useState<any>(null);
-
-  // Sosyal paylaşım fonksiyonları
-  const generateShareText = (type: string, data: any) => {
-    const baseUrl = window.location.origin;
-    
-    switch (type) {
-      case 'size_analysis':
-        return `🎯 AURA AI ile beden analizimi yaptırdım!
-
-✅ ${data.size} bedeni bana ${data.fits ? 'uyuyormuş' : 'uymuyor'}
-📊 BMI hesabım: ${data.bmi?.toFixed(1)} 
-👤 ${data.gender} için ${data.brand} ${data.product}
-🤖 Yapay zeka önerisiyle doğru beden buldum!
-
-#AuraAI #BedenAnalizi #AI #Fashion
-
-${baseUrl}`;
-
-      case 'photo_analysis':
-        return `📸 AURA AI vücut tipimi analiz etti!
-
-🔹 Vücut Tipim: ${data.bodyType || 'Analiz edildi'}
-🎯 AI önerileri aldım ve hangi kıyafetlerin yakıştığını öğrendim!
-🤖 Gemini Vision AI ile gerçek analiz!
-
-#AuraAI #VücutTipi #AIAnaliz #Moda
-
-${baseUrl}`;
-
-      case 'chat_recommendations':
-        return `🤖 AURA AI stil danışmanım harika öneriler verdi!
-
-💭 "${data.userMessage}" dedim
-✨ ${data.productCount} farklı seçenek buldu
-🎯 Hem trendleri hem vücut tipimi düşündü
-
-#AuraAI #AIAsistan #Moda #Alışveriş
-
-${baseUrl}`;
-
-      case 'trends':
-        return `📈 AURA AI ile bu haftanın moda trendlerini keşfettim!
-
-🔥 En trend: ${data.topTrend}
-📊 Hafta ${data.weekNumber} trend analizi
-🤖 AI ile kişiselleştirilmiş moda önerileri!
-
-#AuraAI #ModaTrendi #AI #Fashion
-
-${baseUrl}`;
-
-      default:
-        return `🤖 AURA AI ile kıyafet ve beden analizi yaptırdım!
-
-✨ AI destekli moda önerileri
-🎯 Kişiselleştirilmiş stil danışmanlığı
-📊 Gerçek zamanlı trend analizi
-
-#AuraAI #AI #Moda #Fashion
-
-${baseUrl}`;
-    }
-  };
-
-  const handleShare = async (type: string, data: any) => {
-    const shareText = generateShareText(type, data);
-    setShareContent({ type, data, text: shareText });
-    setShareModalOpen(true);
-  };
-
-  const handleNativeShare = async () => {
-    if (typeof navigator !== 'undefined' && 'share' in navigator && shareContent) {
-      try {
-        await navigator.share({
-          title: 'AURA AI - Kıyafet & Beden Analizi',
-          text: shareContent.text,
-          url: window.location.origin
-        });
-        setShareModalOpen(false);
-      } catch (error) {
-       console.log('Native share failed:', error);
-        // Fallback to clipboard
-        handleCopyToClipboard();
-      }
-    } else {
-      handleCopyToClipboard();
-    }
-  };
-
-  const handleCopyToClipboard = async () => {
-    if (shareContent) {
-      try {
-        await navigator.clipboard.writeText(shareContent.text);
-        alert('📋 Panoya kopyalandı! Sosyal medyada paylaşabilirsiniz.');
-        setShareModalOpen(false);
-      } catch (error) {
-        // Fallback for older browsers
-        const textArea = document.createElement('textarea');
-        textArea.value = shareContent.text;
-        document.body.appendChild(textArea);
-        textArea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textArea);
-        alert('📋 Panoya kopyalandı!');
-        setShareModalOpen(false);
-      }
-    }
-  };
-
-  const handleSocialShare = (platform: string) => {
-    if (!shareContent) return;
-    
-    const text = encodeURIComponent(shareContent.text);
-    const url = encodeURIComponent(window.location.origin);
-    
-    let shareUrl = '';
-    
-    switch (platform) {
-      case 'twitter':
-        shareUrl = `https://twitter.com/intent/tweet?text=${text}`;
-        break;
-      case 'facebook':
-        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${text}`;
-        break;
-      case 'whatsapp':
-        shareUrl = `https://wa.me/?text=${text}`;
-        break;
-      case 'linkedin':
-        shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${url}&summary=${text}`;
-        break;
-    }
-    
-    if (shareUrl) {
-      window.open(shareUrl, '_blank', 'width=600,height=400');
-      setShareModalOpen(false);
-    }
-  };
 
   // Analysis history state
   const [analysisHistory, setAnalysisHistory] = useState<any[]>([]);
@@ -362,6 +232,197 @@ const sizeChart = {
   }
 };
 
+  // ✅ YENİ: Cinsiyet hafızası (LocalStorage)
+  React.useEffect(() => {
+    try {
+      const savedGender = localStorage.getItem('aura_preferred_gender');
+      if (savedGender && !chatGender) {
+        setChatGender(savedGender);
+        setShowGenderSelection(false);
+      }
+    } catch (error) {
+      console.log('LocalStorage kullanılamıyor');
+    }
+  }, [chatGender]);
+
+  // ✅ YENİ: Cinsiyet seçim fonksiyonu
+  const handleGenderSelect = (selectedGender: string) => {
+    setChatGender(selectedGender);
+    setShowGenderSelection(false);
+    
+    // LocalStorage'a kaydet
+    try {
+      localStorage.setItem('aura_preferred_gender', selectedGender);
+    } catch (error) {
+      console.log('LocalStorage kaydedilemedi');
+    }
+    
+    // Hoş geldin mesajı ekle
+    const welcomeMessage: ChatMessage = {
+      role: 'assistant',
+      content: `Merhaba! ${selectedGender === 'kadın' ? 'Hanım' : 'Bey'}efendi 👋\n\nBen AURA'nın AI stil danışmanınızım. Size ${selectedGender} kategorisinden en uygun ürünleri bulup önerebilirim.\n\n✨ Ne aramak istiyorsunuz?`,
+      timestamp: Date.now()
+    };
+    setChatMessages([welcomeMessage]);
+    
+    // Conversation ID oluştur
+    if (!conversationId) {
+      const newConvId = Date.now().toString();
+      setConversationId(newConvId);
+    }
+  };
+
+  // ✅ YENİ: Chat'i sıfırlama fonksiyonu
+  const resetChat = () => {
+    setChatGender('');
+    setShowGenderSelection(true);
+    setChatMessages([]);
+    setConversationId('');
+    try {
+      localStorage.removeItem('aura_preferred_gender');
+    } catch (error) {
+      console.log('LocalStorage temizlenemedi');
+    }
+  };
+
+  // Sosyal paylaşım fonksiyonları
+  const generateShareText = (type: string, data: any) => {
+    const baseUrl = window.location.origin;
+    
+    switch (type) {
+      case 'size_analysis':
+        return `🎯 AURA AI ile beden analizimi yaptırdım!
+
+✅ ${data.size} bedeni bana ${data.fits ? 'uyuyormuş' : 'uymuyor'}
+📊 BMI hesabım: ${data.bmi?.toFixed(1)} 
+👤 ${data.gender} için ${data.brand} ${data.product}
+🤖 Yapay zeka önerisiyle doğru beden buldum!
+
+#AuraAI #BedenAnalizi #AI #Fashion
+
+${baseUrl}`;
+
+      case 'photo_analysis':
+        return `📸 AURA AI vücut tipimi analiz etti!
+
+🔹 Vücut Tipim: ${data.bodyType || 'Analiz edildi'}
+🎯 AI önerileri aldım ve hangi kıyafetlerin yakıştığını öğrendim!
+🤖 Gemini Vision AI ile gerçek analiz!
+
+#AuraAI #VücutTipi #AIAnaliz #Moda
+
+${baseUrl}`;
+
+      case 'chat_recommendations':
+        return `🤖 AURA AI stil danışmanım harika öneriler verdi!
+
+💭 "${data.userMessage}" dedim
+✨ ${data.productCount} farklı seçenek buldu
+🎯 Hem trendleri hem vücut tipimi düşündü
+👤 ${data.gender} kategorisinden özel öneriler
+
+#AuraAI #AIAsistan #Moda #Alışveriş
+
+${baseUrl}`;
+
+      case 'trends':
+        return `📈 AURA AI ile bu haftanın moda trendlerini keşfettim!
+
+🔥 En trend: ${data.topTrend}
+📊 Hafta ${data.weekNumber} trend analizi
+🤖 AI ile kişiselleştirilmiş moda önerileri!
+
+#AuraAI #ModaTrendi #AI #Fashion
+
+${baseUrl}`;
+
+      default:
+        return `🤖 AURA AI ile kıyafet ve beden analizi yaptırdım!
+
+✨ AI destekli moda önerileri
+🎯 Kişiselleştirilmiş stil danışmanlığı
+📊 Gerçek zamanlı trend analizi
+
+#AuraAI #AI #Moda #Fashion
+
+${baseUrl}`;
+    }
+  };
+
+  const handleShare = async (type: string, data: any) => {
+    const shareText = generateShareText(type, data);
+    setShareContent({ type, data, text: shareText });
+    setShareModalOpen(true);
+  };
+
+  const handleNativeShare = async () => {
+    if (typeof navigator !== 'undefined' && 'share' in navigator && shareContent) {
+      try {
+        await navigator.share({
+          title: 'AURA AI - Kıyafet & Beden Analizi',
+          text: shareContent.text,
+          url: window.location.origin
+        });
+        setShareModalOpen(false);
+      } catch (error) {
+       console.log('Native share failed:', error);
+        // Fallback to clipboard
+        handleCopyToClipboard();
+      }
+    } else {
+      handleCopyToClipboard();
+    }
+  };
+
+  const handleCopyToClipboard = async () => {
+    if (shareContent) {
+      try {
+        await navigator.clipboard.writeText(shareContent.text);
+        alert('📋 Panoya kopyalandı! Sosyal medyada paylaşabilirsiniz.');
+        setShareModalOpen(false);
+      } catch (error) {
+        // Fallback for older browsers
+        const textArea = document.createElement('textarea');
+        textArea.value = shareContent.text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        alert('📋 Panoya kopyalandı!');
+        setShareModalOpen(false);
+      }
+    }
+  };
+
+  const handleSocialShare = (platform: string) => {
+    if (!shareContent) return;
+    
+    const text = encodeURIComponent(shareContent.text);
+    const url = encodeURIComponent(window.location.origin);
+    
+    let shareUrl = '';
+    
+    switch (platform) {
+      case 'twitter':
+        shareUrl = `https://twitter.com/intent/tweet?text=${text}`;
+        break;
+      case 'facebook':
+        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${text}`;
+        break;
+      case 'whatsapp':
+        shareUrl = `https://wa.me/?text=${text}`;
+        break;
+      case 'linkedin':
+        shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${url}&summary=${text}`;
+        break;
+    }
+    
+    if (shareUrl) {
+      window.open(shareUrl, '_blank', 'width=600,height=400');
+      setShareModalOpen(false);
+    }
+  };
+
   // Analiz geçmişine ekleme fonksiyonu
   const addToHistory = (type: string, data: any) => {
     const historyItem = {
@@ -387,7 +448,7 @@ const sizeChart = {
   const fetchTrendData = async (category?: string, bodyType?: string) => {
     setTrendLoading(true);
     try {
-      const response = await fetch('http://localhost:8000/get-trends', {
+      const response = await fetch(`${BASE_URL}/get-trends`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -461,7 +522,7 @@ const sizeChart = {
     };
     
     try {
-      const response = await fetch('http://localhost:8000/analyze-size', {
+      const response = await fetch(`${BASE_URL}/analyze-size`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -531,7 +592,7 @@ const sizeChart = {
       const formData = new FormData();
       formData.append('file', file);
       
-      const response = await fetch('http://localhost:8000/analyze-photo', {
+      const response = await fetch(`${BASE_URL}/analyze-photo`, {
         method: 'POST',
         body: formData,
       });
@@ -598,7 +659,7 @@ const sizeChart = {
       
       console.log(`🛍️ ${brand} için dinamik ürünler getiriliyor...`);
       
-      const response = await fetch('http://localhost:8000/get-products', {
+      const response = await fetch(`${BASE_URL}/get-products`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -626,10 +687,16 @@ const sizeChart = {
     }
   };
 
-  // Chat send function - GERÇEK AI DÜŞÜNMİ SÜRESİ İLE
+  // ✅ GÜNCELLENMIŞ: Chat send function - Cinsiyet destekli
   const handleChatSend = async () => {
     const chatInput = chatInputRef.current?.value?.trim();
     if (!chatInput || chatLoading) return;
+    
+    // Cinsiyet seçilmemişse uyarı ver
+    if (!chatGender) {
+      alert('Lütfen önce cinsiyetinizi seçin! 👆');
+      return;
+    }
     
     // Input'u temizle
     if (chatInputRef.current) {
@@ -650,14 +717,15 @@ const sizeChart = {
       const thinkingTime = Math.random() * 1500 + 1500; // 1.5-3 saniye
       await new Promise(resolve => setTimeout(resolve, thinkingTime));
       
-      const response = await fetch('http://localhost:8000/chat-product-search', {
+      const response = await fetch(`${BASE_URL}/chat-product-search`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           message: chatInput,
-          conversation_id: conversationId || undefined
+          conversation_id: conversationId || undefined,
+          user_gender: chatGender // ✅ YENİ: Cinsiyet bilgisi gönder
         }),
       });
       
@@ -679,7 +747,7 @@ const sizeChart = {
       };
       setChatMessages(prev => [...prev, aiMessage]);
       
-      console.log(`🤖 ${data.products?.length || 0} ürün önerisi geldi`);
+      console.log(`🤖 ${data.products?.length || 0} ürün önerisi geldi (${chatGender})`);
       
     } catch (error) {
       console.error('Chat error:', error);
@@ -923,7 +991,7 @@ const sizeChart = {
       
       <div className="photo-section">
         <p>Vücut tipinizi analiz etmek için fotoğrafınızı yükleyin</p>
-          ref={weightInputRef}<input
+        <input
           type="file"
           accept="image/*"
           onChange={handlePhotoUpload}
@@ -1037,34 +1105,36 @@ const sizeChart = {
         </div>
 
         <div className="form-group">
-	  <label>Boy (cm):</label>
- 	  <input
-   	    type="number"
-   	    defaultValue={175}
-   	    min="100"
-   	    max="250"
+          <label>Boy (cm):</label>
+          <input
+            ref={heightInputRef}
+            type="number"
+            defaultValue={175}
+            min="100"
+            max="250"
             onKeyPress={(e) => {
-	      if (!/[0-9]/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete' && e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') {
-		e.preventDefault();
-	      }
+              if (!/[0-9]/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete' && e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') {
+                e.preventDefault();
+              }
             }}
- 	  />
-	</div>
-
-	<div className="form-group">
- 	 <label>Kilo (kg):</label>
- 	 <input
-   	   type="number"
-   	   defaultValue={70}
-   	   min="30"
-   	   max="200"
-	   onKeyPress={(e) => {
-	     if (!/[0-9]/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete' && e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') {
-	       e.preventDefault();
-	     }
-           }}
           />
-	</div>
+        </div>
+
+        <div className="form-group">
+          <label>Kilo (kg):</label>
+          <input
+            ref={weightInputRef}
+            type="number"
+            defaultValue={70}
+            min="30"
+            max="200"
+            onKeyPress={(e) => {
+              if (!/[0-9]/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete' && e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') {
+                e.preventDefault();
+              }
+            }}
+          />
+        </div>
                   
         <div className="form-group">
           <label>Marka:</label>
@@ -1174,7 +1244,7 @@ const sizeChart = {
     </div>
   );
 
-  // Chat Sayfası - GELIŞMIŞ AI STİL DANIŞMANI
+  // ✅ GÜNCELLENMIŞ: Chat Sayfası - Cinsiyet Seçimli
   const ChatPage = () => (
     <div className="analysis-page">
       <div className="page-header">
@@ -1185,138 +1255,206 @@ const sizeChart = {
         <div className="ai-consultant-badge">
           <span>✨ Trend + Kişisel Analiz</span>
         </div>
+        
+        {/* ✅ Cinsiyet değiştirme butonu */}
+        {chatGender && (
+          <button className="change-gender-btn" onClick={resetChat} title="Cinsiyeti Değiştir">
+            👤 {chatGender === 'kadın' ? 'Kadın' : 'Erkek'} ↻
+          </button>
+        )}
       </div>
       
       <div className="chat-container">
         <div className="chat-messages">
-          {chatMessages.length === 0 && (
-            <div className="chat-welcome">
-              <h3>👋 Merhaba! Ben AURA'nın AI Stil Danışmanınızım!</h3>
-              <p>Size özel stil önerileri sunuyorum. Vücut tipinizi, trendleri ve tercihlerinizi analiz ederek en uygun kıyafetleri buluyorum.</p>
-              
-              <div className="ai-features">
-                <div className="ai-feature">
-                  <span className="feature-icon">📈</span>
-                  <span>Güncel trendleri takip ederim</span>
-                </div>
-                <div className="ai-feature">
-                  <span className="feature-icon">👤</span>
-                  <span>Vücut tipinize özel önerilerim</span>
-                </div>
-                <div className="ai-feature">
-                  <span className="feature-icon">💰</span>
-                  <span>Bütçenize uygun seçenekleri bulurum</span>
-                </div>
-                <div className="ai-feature">
-                  <span className="feature-icon">🎨</span>
-                  <span>Stil tercihlerinizi öğrenirim</span>
-                </div>
+          {/* ✅ CİNSİYET SEÇİM EKRANI */}
+          {showGenderSelection && (
+            <div className="gender-selection-screen">
+              <div className="gender-welcome">
+                <h2>👋 AURA AI Stil Danışmanına Hoş Geldiniz!</h2>
+                <p>Size en uygun ürünleri önermek için cinsiyetinizi seçin:</p>
               </div>
               
-              <div className="example-messages">
-                <h4>✨ Örnek sorular:</h4>
-                <p><strong>"200 TL altında kış için hoodie önerisi"</strong></p>
-                <p><strong>"Rectangle vücut tipim için trend elbiseler"</strong></p>
-                <p><strong>"İş için şık ama rahat kıyafetler"</strong></p>
-                <p><strong>"Bu sezon hangi renkler moda?"</strong></p>
+              <div className="gender-selection-buttons">
+                <button 
+                  className="gender-select-btn gender-woman"
+                  onClick={() => handleGenderSelect('kadın')}
+                >
+                  <div className="gender-icon">👩</div>
+                  <div className="gender-text">
+                    <h3>Kadın</h3>
+                    <p>Kadın giyim kategorisinden öneriler</p>
+                  </div>
+                </button>
+                
+                <button 
+                  className="gender-select-btn gender-man"
+                  onClick={() => handleGenderSelect('erkek')}
+                >
+                  <div className="gender-icon">👨</div>
+                  <div className="gender-text">
+                    <h3>Erkek</h3>
+                    <p>Erkek giyim kategorisinden öneriler</p>
+                  </div>
+                </button>
+              </div>
+              
+              <div className="gender-selection-info">
+                <p><strong>💡 İpucu:</strong> Seçtiğiniz cinsiyet tüm ürün aramaları için kullanılacak</p>
+                <p><strong>🔄 Not:</strong> İstediğiniz zaman değiştirebilirsiniz</p>
               </div>
             </div>
           )}
           
-          {chatMessages.map((message, index) => (
-            <div key={index} className={`message ${message.role}`}>
-              <div className="message-content">
-                <p>{message.content}</p>
-                
-                {message.products && message.products.length > 0 && (
-                  <div className="chat-products">
-                    <h4>🛍️ Size özel stil önerilerim:</h4>
-                    <div className="chat-products-grid">
-                      {message.products.map((product, pIndex) => (
-                        <div key={pIndex} className="chat-product-card" onClick={() => window.open(product.url, '_blank')}>
-                          <img src={product.image} alt={product.name} />
-                          <div className="chat-product-info">
-                            <h5>{product.name}</h5>
-                            <p className="price">{product.price}</p>
-                            <span className="brand">{product.brand}</span>
-                            {product.match_score && (
-                              <span className="match-score">✨ {product.match_score}% uyum</span>
-                            )}
-                          </div>
-                        </div>
-                      ))}
+          {/* ✅ NORMAL CHAT MESAJLARI */}
+          {!showGenderSelection && (
+            <>
+              {chatMessages.length === 0 && (
+                <div className="chat-welcome">
+                  <div className="welcome-with-gender">
+                    <h3>✨ {chatGender === 'kadın' ? 'Hanımefendi' : 'Beyefendi'}, size nasıl yardımcı olabilirim?</h3>
+                    <p>🎯 {chatGender === 'kadın' ? 'Kadın' : 'Erkek'} kategorisinden özel öneriler hazırlanıyor...</p>
+                  </div>
+                  
+                  <div className="ai-features">
+                    <div className="ai-feature">
+                      <span className="feature-icon">👗</span>
+                      <span>{chatGender === 'kadın' ? 'Kadın' : 'Erkek'} modasını takip ederim</span>
                     </div>
-                    
-                    {/* YENİ: Chat Önerileri Paylaş Butonu */}
-                    <div className="chat-actions">
-                      <button 
-                        className="share-btn chat-share-btn"
-                        onClick={() => {
-                          const userMsg = chatMessages.find(msg => msg.role === 'user');
-                          handleShare('chat_recommendations', {
-                            userMessage: userMsg?.content || 'Ürün önerisi istedim',
-                            productCount: message.products?.length || 0
-                          });
-                        }}
-                      >
-                        📤 Önerileri Paylaş
-                      </button>
+                    <div className="ai-feature">
+                      <span className="feature-icon">🎯</span>
+                      <span>Cinsiyetinize özel kategorilerden ararım</span>
+                    </div>
+                    <div className="ai-feature">
+                      <span className="feature-icon">💰</span>
+                      <span>Bütçenize uygun seçenekleri bulurum</span>
+                    </div>
+                    <div className="ai-feature">
+                      <span className="feature-icon">🔄</span>
+                      <span>İstediğiniz zaman cinsiyet değiştirebilirsiniz</span>
                     </div>
                   </div>
-                )}
-              </div>
-            </div>
-          ))}
-          
-          {chatLoading && (
-            <div className="message assistant">
-              <div className="message-content">
-                <div className="ai-thinking">
-                  <span className="ai-avatar">🤖</span>
-                  <div className="thinking-text">
-                    <p>{thinkingMessage}</p>
-                    <div className="typing-indicator">
-                      <span></span>
-                      <span></span>
-                      <span></span>
+                  
+                  <div className="example-messages">
+                    <h4>✨ {chatGender === 'kadın' ? 'Kadın' : 'Erkek'} için örnek sorular:</h4>
+                    {chatGender === 'kadın' ? (
+                      <>
+                        <p><strong>"Yaz için hafif elbiseler"</strong></p>
+                        <p><strong>"İş için şık bluzlar"</strong></p>
+                        <p><strong>"200 TL altında tişört"</strong></p>
+                        <p><strong>"Casual günlük kıyafetler"</strong></p>
+                      </>
+                    ) : (
+                      <>
+                        <p><strong>"İş için düz renk gömlekler"</strong></p>
+                        <p><strong>"Spor için rahat şortlar"</strong></p>
+                        <p><strong>"300 TL altında hoodie"</strong></p>
+                        <p><strong>"Casual günlük tişörtler"</strong></p>
+                      </>
+                    )}
+                  </div>
+                </div>
+              )}
+              
+              {chatMessages.map((message, index) => (
+                <div key={index} className={`message ${message.role}`}>
+                  <div className="message-content">
+                    <p>{message.content}</p>
+                    
+                    {message.products && message.products.length > 0 && (
+                      <div className="chat-products">
+                        <h4>🛍️ {chatGender === 'kadın' ? 'Kadın' : 'Erkek'} kategorisinden önerilerim:</h4>
+                        <div className="chat-products-grid">
+                          {message.products.map((product, pIndex) => (
+                            <div key={pIndex} className="chat-product-card" onClick={() => window.open(product.url, '_blank')}>
+                              <img src={product.image} alt={product.name} />
+                              <div className="chat-product-info">
+                                <h5>{product.name}</h5>
+                                <p className="price">{product.price}</p>
+                                <span className="brand">{product.brand}</span>
+                                {product.match_score && (
+                                  <span className="match-score">✨ {product.match_score}% uyum</span>
+                                )}
+                                <span className="gender-tag">{chatGender === 'kadın' ? '👩 Kadın' : '👨 Erkek'}</span>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                        
+                        <div className="chat-actions">
+                          <button 
+                            className="share-btn chat-share-btn"
+                            onClick={() => {
+                              const userMsg = chatMessages.find(msg => msg.role === 'user');
+                              handleShare('chat_recommendations', {
+                                userMessage: userMsg?.content || 'Ürün önerisi istedim',
+                                productCount: message.products?.length || 0,
+                                gender: chatGender
+                              });
+                            }}
+                          >
+                            📤 {chatGender === 'kadın' ? 'Kadın' : 'Erkek'} Önerilerimi Paylaş
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+              
+              {chatLoading && (
+                <div className="message assistant">
+                  <div className="message-content">
+                    <div className="ai-thinking">
+                      <span className="ai-avatar">🤖</span>
+                      <div className="thinking-text">
+                        <p>{thinkingMessage}</p>
+                        <div className="typing-indicator">
+                          <span></span>
+                          <span></span>
+                          <span></span>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
+              )}
+            </>
           )}
         </div>
         
-        <div className="chat-input-area">
-          <div className="chat-input-container">
-            <input
-              ref={chatInputRef}
-              type="text"
-              placeholder="Stil ihtiyacınızı detaylıca anlatın... (örn: 'İş için şık pantolon arıyorum, bütçem 300 TL')"
-              className="chat-input"
-              disabled={chatLoading}
-              autoComplete="off"
-              onKeyPress={(e) => {
-                if (e.key === 'Enter' && !chatLoading) {
-                  e.preventDefault();
-                  handleChatSend();
-                }
-              }}
-            />
-            <button 
-              onClick={handleChatSend}
-              disabled={chatLoading}
-              className="chat-send-btn"
-              title="Stil Danışmanına Sor"
-            >
-              {chatLoading ? '🤔' : '✨'}
-            </button>
+        {/* ✅ INPUT AREA - Sadece cinsiyet seçilince aktif */}
+        {!showGenderSelection && (
+          <div className="chat-input-area">
+            <div className="chat-input-container">
+              <input
+                ref={chatInputRef}
+                type="text"
+                placeholder={`${chatGender === 'kadın' ? 'Kadın' : 'Erkek'} kategorisinden ne aramak istiyorsunuz? (örn: casual tişört, şık pantolon)`}
+                className="chat-input"
+                disabled={chatLoading}
+                autoComplete="off"
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter' && !chatLoading) {
+                    e.preventDefault();
+                    handleChatSend();
+                  }
+                }}
+              />
+              <button 
+                onClick={handleChatSend}
+                disabled={chatLoading}
+                className="chat-send-btn"
+                title={`${chatGender === 'kadın' ? 'Kadın' : 'Erkek'} Ürün Ara`}
+              >
+                {chatLoading ? '🤔' : '✨'}
+              </button>
+            </div>
+            
+            <div className="chat-tips">
+              <p>💡 <strong>İpucu:</strong> "{chatGender === 'kadın' ? 'Kadın' : 'Erkek'}" kategorisinden arama yapılıyor. Ne kadar detay verirseniz, o kadar kişisel öneriler alırsınız!</p>
+            </div>
           </div>
-          
-          <div className="chat-tips">
-            <p>💡 <strong>İpucu:</strong> Ne kadar detay verirseniz, o kadar kişisel öneriler alırsınız!</p>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );
